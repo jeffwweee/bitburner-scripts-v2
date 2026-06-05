@@ -9,23 +9,38 @@ const MONEY_BUFFER = 0.75;
 
 /** @param {NS} ns */
 export async function main(ns) {
-  const requestedTarget = String(ns.args[0] || "");
+  const options = ns.flags([
+    ["target", ""],
+    ["tail", false],
+    ["terminal", false],
+    ["help", false],
+  ]);
+
+  if (options.help) {
+    printHelp(ns);
+    return;
+  }
+
+  const requestedTarget = String(options.target || firstPositionalArg(options._) || "");
   let currentAction = "";
+  let currentTarget = "";
 
   ns.disableLog("ALL");
+  maybeOpenTail(ns, Boolean(options.tail));
 
   while (true) {
     const target = requestedTarget || chooseTarget(ns);
     if (!target) {
-      ns.tprint("auto: no rooted money target found yet. Run src/root.js or gain access to more servers.");
+      log(ns, "auto: no rooted money target found yet. Run src/root.js or gain access to more servers.", Boolean(options.terminal));
       await ns.sleep(30000);
       continue;
     }
 
     const action = chooseAction(ns, target);
-    if (action !== currentAction) {
+    if (action !== currentAction || target !== currentTarget) {
       currentAction = action;
-      await deploy(ns, action, target);
+      currentTarget = target;
+      await deploy(ns, action, target, Boolean(options.terminal));
     }
 
     ns.print(statusLine(ns, action, target));
@@ -44,10 +59,18 @@ function chooseTarget(ns) {
 }
 
 function scoreTarget(ns, host) {
-  const money = ns.getServerMaxMoney(host);
-  const level = Math.max(1, ns.getServerRequiredHackingLevel(host));
-  const growth = Math.max(1, ns.getServerGrowth(host));
-  return (money * growth) / level;
+  const maxMoney = ns.getServerMaxMoney(host);
+  const currentMoney = ns.getServerMoneyAvailable(host);
+  const minSecurity = ns.getServerMinSecurityLevel(host);
+  const security = ns.getServerSecurityLevel(host);
+  const securityPenalty = 1 + Math.max(0, security - minSecurity) / 10;
+  const moneyReadiness = Math.max(0.1, currentMoney / Math.max(1, maxMoney));
+  const hackFraction = Math.max(0, ns.hackAnalyze(host));
+  const hackChance = Math.max(0, ns.hackAnalyzeChance(host));
+  const expectedHackValue = maxMoney * hackFraction * hackChance;
+  const cycleTime = Math.max(1, ns.getHackTime(host) + ns.getGrowTime(host) + ns.getWeakenTime(host));
+
+  return (expectedHackValue * moneyReadiness) / cycleTime / securityPenalty;
 }
 
 function chooseAction(ns, target) {
@@ -61,7 +84,7 @@ function chooseAction(ns, target) {
   return "hack";
 }
 
-async function deploy(ns, action, target) {
+async function deploy(ns, action, target, terminal) {
   const script = WORKERS[action];
   const servers = discoverServers(ns)
     .filter((host) => host !== "home")
@@ -85,7 +108,7 @@ async function deploy(ns, action, target) {
     }
   }
 
-  ns.tprint(`auto: ${action} ${target} on ${launched}/${servers.length} server(s), ${totalThreads} thread(s).`);
+  log(ns, `auto: ${action} ${target} on ${launched}/${servers.length} server(s), ${totalThreads} thread(s).`, terminal);
 }
 
 function statusLine(ns, action, target) {
@@ -130,4 +153,27 @@ function getThreadCount(ns, host, script) {
 function formatPercent(value, max) {
   if (max <= 0) return "n/a";
   return `${((value / max) * 100).toFixed(1)}%`;
+}
+
+function firstPositionalArg(args) {
+  return Array.isArray(args) && args.length > 0 ? args[0] : "";
+}
+
+function log(ns, message, terminal) {
+  ns.print(message);
+  if (terminal) ns.tprint(message);
+}
+
+function maybeOpenTail(ns, shouldOpen) {
+  if (!shouldOpen) return;
+  if (ns.ui && typeof ns.ui.openTail === "function") {
+    ns.ui.openTail();
+  } else if (typeof ns.tail === "function") {
+    ns.tail();
+  }
+}
+
+function printHelp(ns) {
+  ns.tprint("Usage: run src/auto.js [TARGET] [--target HOST] [--tail] [--terminal]");
+  ns.tprint("Chooses a rooted money target, deploys weaken/grow/hack workers, and keeps the loop moving.");
 }

@@ -35,6 +35,7 @@ export async function main(ns) {
     ["budget", 0.35],
     ["all", false],
     ["dry-run", false],
+    ["quiet", false],
     ["help", false],
   ]);
 
@@ -43,8 +44,10 @@ export async function main(ns) {
     return;
   }
 
+  const quiet = Boolean(options.quiet);
+
   if (!ns.singularity || typeof ns.singularity.purchaseTor !== "function") {
-    ns.tprint("darkweb: Singularity API is unavailable. Buy TOR/programs manually until Source-File 4 or BitNode 4 access is available.");
+    log(ns, "darkweb: Singularity API is unavailable. Buy TOR/programs manually until Source-File 4 or BitNode 4 access is available.", quiet);
     return;
   }
 
@@ -56,24 +59,24 @@ export async function main(ns) {
 
   if (!hasTor(ns)) {
     if (TOR_COST > budget) {
-      ns.tprint(`darkweb: skipping TOR; ${formatMoney(TOR_COST)} exceeds budget ${formatMoney(budget)}.`);
+      log(ns, `darkweb: skipping TOR; ${formatMoney(TOR_COST)} exceeds budget ${formatMoney(budget)}.`, quiet);
       return;
     }
 
     if (dryRun) {
-      ns.tprint(`DRY buy TOR router for ${formatMoney(TOR_COST)}`);
+      log(ns, `DRY buy TOR router for ${formatMoney(TOR_COST)}`, quiet);
       spent += TOR_COST;
     } else if (ns.singularity.purchaseTor()) {
-      ns.tprint(`darkweb: purchased TOR router for ${formatMoney(TOR_COST)}.`);
+      log(ns, `darkweb: purchased TOR router for ${formatMoney(TOR_COST)}.`, quiet);
       spent += TOR_COST;
     } else {
-      ns.tprint("darkweb: could not purchase TOR router yet.");
+      log(ns, "darkweb: could not purchase TOR router yet.", quiet);
       return;
     }
   }
 
   if (!hasTor(ns) && !dryRun) {
-    ns.tprint("darkweb: TOR router is still unavailable.");
+    log(ns, "darkweb: TOR router is still unavailable.", quiet);
     return;
   }
 
@@ -83,27 +86,27 @@ export async function main(ns) {
 
     const cost = getProgramCost(ns, program);
     if (spent + cost > budget) {
-      ns.tprint(`darkweb: budget holds before ${program} (${formatMoney(cost)}).`);
+      log(ns, `darkweb: budget holds before ${program} (${formatMoney(cost)}).`, quiet);
       continue;
     }
 
     if (dryRun) {
-      ns.tprint(`DRY buy ${program} for ${formatMoney(cost)}`);
+      log(ns, `DRY buy ${program} for ${formatMoney(cost)}`, quiet);
       spent += cost;
       continue;
     }
 
     try {
       if (ns.singularity.purchaseProgram(program)) {
-        ns.tprint(`darkweb: purchased ${program} for ${formatMoney(cost)}.`);
+        log(ns, `darkweb: purchased ${program} for ${formatMoney(cost)}.`, quiet);
         spent += cost;
       }
     } catch (error) {
-      ns.tprint(`darkweb: failed to buy ${program}: ${String(error)}`);
+      log(ns, `darkweb: failed to buy ${program}: ${String(error)}`, quiet);
     }
   }
 
-  ns.tprint(`darkweb: spent up to ${formatMoney(spent)} from budget ${formatMoney(budget)}.`);
+  log(ns, `darkweb: spent up to ${formatMoney(spent)} from budget ${formatMoney(budget)}.`, quiet);
 }
 
 function hasTor(ns) {
@@ -138,8 +141,13 @@ function formatMoney(value) {
   return `$${Math.floor(value)}`;
 }
 
+function log(ns, message, quiet) {
+  ns.print(message);
+  if (!quiet) ns.tprint(message);
+}
+
 function printHelp(ns) {
-  ns.tprint("Usage: run src/darkweb.js [--budget FRACTION_OR_PERCENT] [--all] [--dry-run]");
+  ns.tprint("Usage: run src/darkweb.js [--budget FRACTION_OR_PERCENT] [--all] [--dry-run] [--quiet]");
   ns.tprint("Buys TOR and port opener programs when Singularity access is available.");
   ns.tprint("Default budget is 35% of current home money. Use --all to include utility programs and Formulas.exe.");
 }

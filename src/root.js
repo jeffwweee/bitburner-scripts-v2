@@ -1,11 +1,22 @@
 /** @param {NS} ns */
 export async function main(ns) {
+  const options = ns.flags([
+    ["quiet", false],
+    ["help", false],
+  ]);
+
+  if (options.help) {
+    ns.tprint("Usage: run src/root.js [--quiet]");
+    return;
+  }
+
+  const quiet = Boolean(options.quiet);
   const servers = discoverServers(ns).filter((host) => host !== "home");
   const openers = getAvailableOpeners(ns);
   let rooted = 0;
   let skipped = 0;
 
-  ns.tprint(`root: found ${servers.length} server(s), ${openers.length} port opener(s) available.`);
+  log(ns, `root: found ${servers.length} server(s), ${openers.length} port opener(s) available.`, quiet);
 
   for (const host of servers) {
     if (ns.hasRootAccess(host)) continue;
@@ -23,13 +34,13 @@ export async function main(ns) {
     try {
       ns.nuke(host);
       rooted++;
-      ns.tprint(`ROOT ${host}`);
+      log(ns, `ROOT ${host}`, quiet);
     } catch (error) {
-      ns.tprint(`FAIL ${host}: ${String(error)}`);
+      log(ns, `FAIL ${host}: ${String(error)}`, quiet);
     }
   }
 
-  ns.tprint(`root: rooted ${rooted} new server(s), skipped ${skipped} needing more port openers.`);
+  log(ns, `root: rooted ${rooted} new server(s), skipped ${skipped} needing more port openers.`, quiet);
 }
 
 function discoverServers(ns) {
@@ -73,4 +84,9 @@ function getAvailableOpeners(ns) {
   }
 
   return openers;
+}
+
+function log(ns, message, quiet) {
+  ns.print(message);
+  if (!quiet) ns.tprint(message);
 }

@@ -58,6 +58,7 @@ Recommended alias after the first successful run:
 ```text
 alias pull="run repo-update.js"
 alias orch="run src/orchestrator.js"
+alias orchtail="run src/orchestrator.js --tail"
 alias orchonce="run src/orchestrator.js --once"
 ```
 
@@ -107,6 +108,7 @@ run src/darkweb.js --all
 ```text
 run src/orchestrator.js
 run src/orchestrator.js --target foodnstuff
+run src/orchestrator.js --tail
 run src/orchestrator.js --restart-auto
 ```
 
@@ -116,3 +118,5 @@ Run a one-shot cycle when you want to see what it would do without leaving it re
 run src/orchestrator.js --once
 orchonce
 ```
+
+By default the orchestrator writes status to its script log instead of spamming the terminal. Use `--tail` or the `orchtail` alias to open log windows. Use `--terminal` only when you want terminal output too.

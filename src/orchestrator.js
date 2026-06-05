@@ -15,6 +15,8 @@ export async function main(ns) {
     ["target", ""],
     ["once", false],
     ["restart-auto", false],
+    ["tail", false],
+    ["terminal", false],
     ["no-auto", false],
     ["no-buy", false],
     ["no-darkweb", false],
@@ -30,55 +32,67 @@ export async function main(ns) {
 
   const interval = Math.max(5000, Number(options.interval) || 60000);
   const target = String(options.target || "");
+  const terminal = Boolean(options.terminal);
 
-  ns.disableLog("sleep");
-  ns.disableLog("getServerMoneyAvailable");
+  ns.disableLog("ALL");
+  maybeOpenTail(ns, Boolean(options.tail));
 
   do {
-    ns.tprint(`orchestrator: cycle start, home money ${formatMoney(ns.getServerMoneyAvailable("home"))}.`);
+    log(ns, `orchestrator: cycle start, home money ${formatMoney(ns.getServerMoneyAvailable("home"))}.`, terminal);
 
     if (!options["no-darkweb"]) {
-      await runChild(ns, SCRIPTS.darkweb, ["--budget", options["darkweb-budget"], options["dry-run"] ? "--dry-run" : ""].filter(Boolean));
+      await runChild(ns, SCRIPTS.darkweb, [
+        "--budget",
+        options["darkweb-budget"],
+        options["dry-run"] ? "--dry-run" : "",
+        terminal ? "" : "--quiet",
+      ].filter(Boolean));
     }
 
     if (!options["no-root"]) {
-      await runChild(ns, SCRIPTS.root, []);
+      await runChild(ns, SCRIPTS.root, [terminal ? "" : "--quiet"].filter(Boolean));
     }
 
     if (!options["no-buy"]) {
-      await runChild(ns, SCRIPTS.buyServer, [options.budget, options["min-ram"]]);
+      await runChild(ns, SCRIPTS.buyServer, [
+        "--budget",
+        options.budget,
+        "--min-ram",
+        options["min-ram"],
+        terminal ? "" : "--quiet",
+      ].filter(Boolean));
     }
 
     if (!options["no-auto"]) {
-      ensureAuto(ns, target, Boolean(options["restart-auto"]));
+      ensureAuto(ns, target, Boolean(options["restart-auto"]), Boolean(options.tail), terminal);
     }
 
     if (options.once) {
-      ns.tprint("orchestrator: one-shot cycle complete.");
+      log(ns, "orchestrator: one-shot cycle complete.", terminal);
       return;
     }
 
-    ns.tprint(`orchestrator: sleeping ${Math.round(interval / 1000)}s.`);
+    log(ns, `orchestrator: sleeping ${Math.round(interval / 1000)}s.`, terminal);
     await ns.sleep(interval);
   } while (true);
 }
 
 async function runChild(ns, script, args) {
   if (!ns.fileExists(script, "home")) {
-    ns.tprint(`orchestrator: missing ${script}; run pull first.`);
+    ns.print(`orchestrator: missing ${script}; run pull first.`);
     return 0;
   }
 
   const ramNeeded = ns.getScriptRam(script, "home");
   const freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
   if (ramNeeded > freeRam) {
-    ns.tprint(`orchestrator: not enough home RAM for ${script}; needs ${ramNeeded.toFixed(2)}GB, free ${freeRam.toFixed(2)}GB.`);
+    ns.print(`orchestrator: not enough home RAM for ${script}; needs ${ramNeeded.toFixed(2)}GB, free ${freeRam.toFixed(2)}GB.`);
     return 0;
   }
 
   const pid = ns.run(script, 1, ...args);
   if (pid === 0) {
-    ns.tprint(`orchestrator: failed to start ${script}.`);
+    ns.print(`orchestrator: failed to start ${script}.`);
     return 0;
   }
 
@@ -86,11 +100,11 @@ async function runChild(ns, script, args) {
   return pid;
 }
 
-function ensureAuto(ns, target, restart) {
+function ensureAuto(ns, target, restart, tail, terminal) {
   const running = ns.ps("home").filter((process) => process.filename === SCRIPTS.auto);
 
   if (running.length > 0 && !restart) {
-    ns.tprint(`orchestrator: ${SCRIPTS.auto} already running.`);
+    log(ns, `orchestrator: ${SCRIPTS.auto} already running.`, terminal);
     return;
   }
 
@@ -98,21 +112,25 @@ function ensureAuto(ns, target, restart) {
     ns.kill(process.pid);
   }
 
-  const args = target ? [target] : [];
+  const args = [
+    ...(target ? ["--target", target] : []),
+    ...(tail ? ["--tail"] : []),
+    ...(terminal ? ["--terminal"] : []),
+  ];
   const ramNeeded = ns.getScriptRam(SCRIPTS.auto, "home");
   const freeRam = ns.getServerMaxRam("home") - ns.getServerUsedRam("home");
   if (ramNeeded > freeRam) {
-    ns.tprint(`orchestrator: not enough home RAM for ${SCRIPTS.auto}; needs ${ramNeeded.toFixed(2)}GB, free ${freeRam.toFixed(2)}GB.`);
+    log(ns, `orchestrator: not enough home RAM for ${SCRIPTS.auto}; needs ${ramNeeded.toFixed(2)}GB, free ${freeRam.toFixed(2)}GB.`, terminal);
     return;
   }
 
   const pid = ns.run(SCRIPTS.auto, 1, ...args);
   if (pid === 0) {
-    ns.tprint(`orchestrator: failed to start ${SCRIPTS.auto}.`);
+    log(ns, `orchestrator: failed to start ${SCRIPTS.auto}.`, terminal);
     return;
   }
 
-  ns.tprint(`orchestrator: started ${SCRIPTS.auto}${target ? ` targeting ${target}` : ""}.`);
+  log(ns, `orchestrator: started ${SCRIPTS.auto}${target ? ` targeting ${target}` : ""}.`, terminal);
 }
 
 async function waitForPid(ns, pid) {
@@ -129,6 +147,20 @@ function formatMoney(value) {
   return `$${Math.floor(value)}`;
 }
 
+function log(ns, message, terminal) {
+  ns.print(message);
+  if (terminal) ns.tprint(message);
+}
+
+function maybeOpenTail(ns, shouldOpen) {
+  if (!shouldOpen) return;
+  if (ns.ui && typeof ns.ui.openTail === "function") {
+    ns.ui.openTail();
+  } else if (typeof ns.tail === "function") {
+    ns.tail();
+  }
+}
+
 function printHelp(ns) {
   ns.tprint("Usage: run src/orchestrator.js [options]");
   ns.tprint("Coordinates darkweb purchases, rooting, purchased-server buying, and the money loop.");
@@ -139,6 +171,8 @@ function printHelp(ns) {
   ns.tprint("  --min-ram GB          Minimum purchased server RAM, default 8");
   ns.tprint("  --target HOST         Force auto.js target");
   ns.tprint("  --restart-auto        Restart auto.js each cycle to redeploy across new RAM");
+  ns.tprint("  --tail                Open log windows for orchestrator and auto.js");
+  ns.tprint("  --terminal            Also print orchestrator/auto status to terminal");
   ns.tprint("  --once                Run one cycle and exit");
   ns.tprint("  --no-auto|--no-buy|--no-darkweb|--no-root");
   ns.tprint("  --dry-run             Pass dry-run through to darkweb purchases");
