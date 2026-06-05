@@ -7,25 +7,25 @@ export async function main(ns) {
   const minRam = parseRam(ns.args[1], DEFAULT_MIN_RAM);
   const money = ns.getServerMoneyAvailable("home");
   const budget = money * budgetFraction;
-  const maxRam = ns.getPurchasedServerMaxRam();
+  const maxRam = ns.cloud.getRamLimit();
   const targetRam = largestAffordableRam(ns, budget, minRam, maxRam);
 
   if (targetRam <= 0) {
     ns.tprint(`buy-server: no server >= ${minRam}GB fits budget ${formatMoney(budget)}.`);
-    ns.tprint(`buy-server: ${minRam}GB costs ${formatMoney(ns.getPurchasedServerCost(minRam))}.`);
+    ns.tprint(`buy-server: ${minRam}GB costs ${formatMoney(ns.cloud.getServerCost(minRam))}.`);
     return;
   }
 
-  const purchased = ns.getPurchasedServers()
+  const purchased = ns.cloud.getServerNames()
     .map((host) => ({ host, ram: ns.getServerMaxRam(host) }))
     .sort((a, b) => a.ram - b.ram || a.host.localeCompare(b.host));
 
-  const limit = ns.getPurchasedServerLimit();
-  const cost = ns.getPurchasedServerCost(targetRam);
+  const limit = ns.cloud.getServerLimit();
+  const cost = ns.cloud.getServerCost(targetRam);
 
   if (purchased.length < limit) {
     const hostname = nextServerName(ns, targetRam);
-    const bought = ns.purchaseServer(hostname, targetRam);
+    const bought = ns.cloud.purchaseServer(hostname, targetRam);
     if (!bought) {
       ns.tprint(`buy-server: failed to purchase ${hostname} (${targetRam}GB).`);
       return;
@@ -43,13 +43,13 @@ export async function main(ns) {
   }
 
   ns.killall(smallest.host);
-  if (!ns.deleteServer(smallest.host)) {
+  if (!ns.cloud.deleteServer(smallest.host)) {
     ns.tprint(`buy-server: failed to delete ${smallest.host}; stop scripts there and try again.`);
     return;
   }
 
   const hostname = nextServerName(ns, targetRam);
-  const bought = ns.purchaseServer(hostname, targetRam);
+  const bought = ns.cloud.purchaseServer(hostname, targetRam);
   if (!bought) {
     ns.tprint(`buy-server: deleted ${smallest.host}, but failed to purchase replacement.`);
     return;
@@ -75,7 +75,7 @@ function largestAffordableRam(ns, budget, minRam, maxRam) {
   let best = 0;
 
   for (let ram = minRam; ram <= maxRam; ram *= 2) {
-    if (ns.getPurchasedServerCost(ram) <= budget) {
+    if (ns.cloud.getServerCost(ram) <= budget) {
       best = ram;
     } else {
       break;
@@ -86,7 +86,7 @@ function largestAffordableRam(ns, budget, minRam, maxRam) {
 }
 
 function nextServerName(ns, ram) {
-  const existing = new Set(ns.getPurchasedServers());
+  const existing = new Set(ns.cloud.getServerNames());
 
   for (let index = 0; index < 1000; index++) {
     const name = `pserv-${ram}gb-${index}`;
