@@ -90,7 +90,7 @@ function analyzeTarget(ns, host) {
   const growTime = ns.getGrowTime(host);
   const weakenTime = ns.getWeakenTime(host);
   const cycleTime = Math.max(1, hackTime + growTime + weakenTime);
-  const preparedScore = expectedHackValue / cycleTime;
+  const preparedValuePerSecond = expectedHackValue / (cycleTime / 1000);
 
   const prepPenalty = 1
     + securityDelta / 25
@@ -98,8 +98,8 @@ function analyzeTarget(ns, host) {
 
   return {
     host,
-    score: preparedScore / prepPenalty,
-    preparedScore,
+    score: preparedValuePerSecond / prepPenalty,
+    preparedValuePerSecond,
     maxMoney,
     moneyRatio,
     securityDelta,
@@ -118,13 +118,13 @@ function printRankings(ns, limit) {
   }
 
   ns.tprint("auto target rankings:");
-  ns.tprint("host                 score      prepped/s  maxMoney      money   sec+   chance  hack%");
+  ns.tprint("host                 score/s    prepped/s  maxMoney      money   sec+   chance  hack%");
 
   for (const target of ranked) {
     ns.tprint([
       pad(target.host, 20),
       pad(formatNumber(target.score), 10),
-      pad(formatMoneyPerSecond(target.preparedScore), 10),
+      pad(formatMoneyPerSecond(target.preparedValuePerSecond), 10),
       pad(formatMoney(target.maxMoney), 13),
       pad(formatPercent(target.moneyRatio, 1), 7),
       pad(target.securityDelta.toFixed(1), 6),
