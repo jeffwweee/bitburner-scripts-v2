@@ -43,3 +43,20 @@ The project should help Jef progress through Bitburner as autonomously as possib
 ## Current Status
 
 Project scaffold is initialized. The current focus is building an early game script foundation and learning loop for Bitburner progression.
+
+## In-Game Updates
+
+Bootstrap the updater from the Bitburner terminal:
+
+```text
+wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/repo-update.js repo-update.js
+run repo-update.js
+```
+
+Recommended alias after the first successful run:
+
+```text
+alias pull="run repo-update.js"
+```
+
+After that, run `pull` in the Bitburner terminal to download the latest `manifest.json` and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.

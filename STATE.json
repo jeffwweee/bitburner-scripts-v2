@@ -16,11 +16,11 @@
     "Copy another player's framework blindly without understanding or adapting it.",
     "Optimize for advanced mechanics before they are relevant to the current save."
   ],
-  "currentFocus": "Build an early game script foundation and progression recommendation loop.",
+  "currentFocus": "Build in-game update infrastructure, then continue into the early game script foundation and progression recommendation loop.",
   "lifecycle": {
     "phase": "intake",
     "updatedBy": "Codex",
-    "updatedAt": "2026-06-05 23:10"
+    "updatedAt": "2026-06-05 23:22"
   },
   "activeHandoff": {
     "id": "",
@@ -46,10 +46,10 @@
   },
   "repo": {
     "provider": "github",
-    "owner": "jeffr",
-    "name": "bitburner-scripts",
-    "remoteUrl": "",
-    "defaultBranch": "main"
+    "owner": "jeffwweee",
+    "name": "bitburner-scripts-v2",
+    "remoteUrl": "git@github.com:jeffwweee/bitburner-scripts-v2.git",
+    "defaultBranch": "master"
   },
   "discord": {
     "channelId": "",
