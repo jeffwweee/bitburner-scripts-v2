@@ -21,6 +21,7 @@ export async function main(ns) {
 
   ns.disableLog("wget");
   ns.tprint(`repo-update: downloading manifest from ${manifestUrl}`);
+  ns.tprint("repo-update: adding a cache-busting query so GitHub raw updates are available immediately.");
 
   const gotManifest = await ns.wget(cacheBust(manifestUrl), TEMP_MANIFEST, host);
   if (!gotManifest) {

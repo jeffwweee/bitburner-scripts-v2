@@ -60,3 +60,23 @@ alias pull="run repo-update.js"
 ```
 
 After that, run `pull` in the Bitburner terminal to download the latest `manifest.json` and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
+
+`repo-update.js` adds a timestamp query to downloads so GitHub raw cache should not delay manifest or script updates.
+
+## Early Game Commands
+
+```text
+run src/scan.js money
+run src/root.js
+run src/info.js foodnstuff
+run src/deploy.js weaken foodnstuff
+run src/deploy.js grow foodnstuff
+run src/deploy.js hack foodnstuff
+run src/auto.js
+```
+
+`src/auto.js` chooses a rooted money target automatically. You can also force a target:
+
+```text
+run src/auto.js foodnstuff
+```

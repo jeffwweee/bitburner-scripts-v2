@@ -16,7 +16,7 @@
     "Copy another player's framework blindly without understanding or adapting it.",
     "Optimize for advanced mechanics before they are relevant to the current save."
   ],
-  "currentFocus": "Build in-game update infrastructure, then continue into the early game script foundation and progression recommendation loop.",
+  "currentFocus": "Build the early game script foundation: tiny workers, target info, network scanning, root automation, deployment, and a simple coordinator.",
   "lifecycle": {
     "phase": "intake",
     "updatedBy": "Codex",
@@ -31,15 +31,15 @@
   },
   "gates": {
     "intake": "open",
-    "discovery": "not-started",
-    "shaping": "not-started",
+    "discovery": "open",
+    "shaping": "open",
     "build": "not-started",
     "review": "not-started",
     "ship": "not-started"
   },
   "revisionCount": 0,
   "refs": {
-    "latestBrief": "README.md",
+    "latestBrief": "plans/early-game.md",
     "latestBuildEvidence": "",
     "latestReviewResult": "",
     "latestHandoffPacket": ""
