@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "2",
+  "project": {
+    "slug": "bitburner-scripts",
+    "name": "Bitburner Scripts"
+  },
+  "summary": "Jef's Bitburner script repo. Codex acts as a wingman to help progress the game as autonomously as possible with scripts, recommendations, and clear explanations.",
+  "goals": [
+    "Provide useful early game Bitburner scripts quickly.",
+    "Recommend next steps as game progression changes.",
+    "Explain what the scripts do and why they are useful.",
+    "Keep the repo organized enough to grow into midgame and later automation."
+  ],
+  "nonGoals": [
+    "Build perfect endgame automation before the early game foundation is stable.",
+    "Copy another player's framework blindly without understanding or adapting it.",
+    "Optimize for advanced mechanics before they are relevant to the current save."
+  ],
+  "currentFocus": "Build an early game script foundation and progression recommendation loop.",
+  "lifecycle": {
+    "phase": "intake",
+    "updatedBy": "Codex",
+    "updatedAt": "2026-06-05 23:10"
+  },
+  "activeHandoff": {
+    "id": "",
+    "from": "",
+    "to": "",
+    "type": "",
+    "status": ""
+  },
+  "gates": {
+    "intake": "open",
+    "discovery": "not-started",
+    "shaping": "not-started",
+    "build": "not-started",
+    "review": "not-started",
+    "ship": "not-started"
+  },
+  "revisionCount": 0,
+  "refs": {
+    "latestBrief": "README.md",
+    "latestBuildEvidence": "",
+    "latestReviewResult": "",
+    "latestHandoffPacket": ""
+  },
+  "repo": {
+    "provider": "github",
+    "owner": "jeffr",
+    "name": "bitburner-scripts",
+    "remoteUrl": "",
+    "defaultBranch": "main"
+  },
+  "discord": {
+    "channelId": "",
+    "channelName": ""
+  },
+  "sources": {
+    "documentation": "https://github.com/bitburner-official/bitburner-src",
+    "inspiration": "https://github.com/alainbryden/bitburner-scripts"
+  }
+}
