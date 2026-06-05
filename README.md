@@ -85,6 +85,8 @@ run src/auto.js
 
 ```text
 run src/auto.js foodnstuff
+run src/auto.js --rank
+run src/auto.js --rank --top 20
 ```
 
 `src/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:

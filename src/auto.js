@@ -6,11 +6,14 @@ const WORKERS = {
 
 const SECURITY_BUFFER = 5;
 const MONEY_BUFFER = 0.75;
+const DEFAULT_RANK_LIMIT = 10;
 
 /** @param {NS} ns */
 export async function main(ns) {
   const options = ns.flags([
     ["target", ""],
+    ["rank", false],
+    ["top", DEFAULT_RANK_LIMIT],
     ["tail", false],
     ["terminal", false],
     ["help", false],
@@ -22,6 +25,11 @@ export async function main(ns) {
   }
 
   const requestedTarget = String(options.target || firstPositionalArg(options._) || "");
+  if (options.rank) {
+    printRankings(ns, Number(options.top) || DEFAULT_RANK_LIMIT);
+    return;
+  }
+
   let currentAction = "";
   let currentTarget = "";
 
@@ -49,28 +57,81 @@ export async function main(ns) {
 }
 
 function chooseTarget(ns) {
+  return getRankedTargets(ns)[0]?.host || "";
+}
+
+function scoreTarget(ns, host) {
+  return analyzeTarget(ns, host).score;
+}
+
+function getRankedTargets(ns) {
   const hackingLevel = ns.getHackingLevel();
 
   return discoverServers(ns)
     .filter((host) => ns.hasRootAccess(host))
     .filter((host) => ns.getServerMaxMoney(host) > 0)
     .filter((host) => ns.getServerRequiredHackingLevel(host) <= hackingLevel)
-    .sort((a, b) => scoreTarget(ns, b) - scoreTarget(ns, a))[0] || "";
+    .map((host) => analyzeTarget(ns, host))
+    .filter((target) => target.score > 0)
+    .sort((a, b) => b.score - a.score);
 }
 
-function scoreTarget(ns, host) {
+function analyzeTarget(ns, host) {
   const maxMoney = ns.getServerMaxMoney(host);
   const currentMoney = ns.getServerMoneyAvailable(host);
   const minSecurity = ns.getServerMinSecurityLevel(host);
   const security = ns.getServerSecurityLevel(host);
-  const securityPenalty = 1 + Math.max(0, security - minSecurity) / 10;
-  const moneyReadiness = Math.max(0.1, currentMoney / Math.max(1, maxMoney));
+  const securityDelta = Math.max(0, security - minSecurity);
+  const moneyRatio = maxMoney > 0 ? currentMoney / maxMoney : 0;
   const hackFraction = Math.max(0, ns.hackAnalyze(host));
   const hackChance = Math.max(0, ns.hackAnalyzeChance(host));
   const expectedHackValue = maxMoney * hackFraction * hackChance;
-  const cycleTime = Math.max(1, ns.getHackTime(host) + ns.getGrowTime(host) + ns.getWeakenTime(host));
+  const hackTime = ns.getHackTime(host);
+  const growTime = ns.getGrowTime(host);
+  const weakenTime = ns.getWeakenTime(host);
+  const cycleTime = Math.max(1, hackTime + growTime + weakenTime);
+  const preparedScore = expectedHackValue / cycleTime;
 
-  return (expectedHackValue * moneyReadiness) / cycleTime / securityPenalty;
+  const prepPenalty = 1
+    + securityDelta / 25
+    + Math.max(0, 1 - moneyRatio);
+
+  return {
+    host,
+    score: preparedScore / prepPenalty,
+    preparedScore,
+    maxMoney,
+    moneyRatio,
+    securityDelta,
+    hackChance,
+    hackFraction,
+    expectedHackValue,
+    cycleTime,
+  };
+}
+
+function printRankings(ns, limit) {
+  const ranked = getRankedTargets(ns).slice(0, Math.max(1, limit));
+  if (ranked.length === 0) {
+    ns.tprint("auto rank: no rooted, hackable money servers found.");
+    return;
+  }
+
+  ns.tprint("auto target rankings:");
+  ns.tprint("host                 score      prepped/s  maxMoney      money   sec+   chance  hack%");
+
+  for (const target of ranked) {
+    ns.tprint([
+      pad(target.host, 20),
+      pad(formatNumber(target.score), 10),
+      pad(formatMoneyPerSecond(target.preparedScore), 10),
+      pad(formatMoney(target.maxMoney), 13),
+      pad(formatPercent(target.moneyRatio, 1), 7),
+      pad(target.securityDelta.toFixed(1), 6),
+      pad(formatPercent(target.hackChance, 1), 7),
+      formatPercent(target.hackFraction, 1),
+    ].join(" "));
+  }
 }
 
 function chooseAction(ns, target) {
@@ -155,6 +216,30 @@ function formatPercent(value, max) {
   return `${((value / max) * 100).toFixed(1)}%`;
 }
 
+function formatMoney(value) {
+  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}t`;
+  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}b`;
+  if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}m`;
+  if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}k`;
+  return `$${Math.floor(value)}`;
+}
+
+function formatMoneyPerSecond(value) {
+  return `${formatMoney(value)}/s`;
+}
+
+function formatNumber(value) {
+  if (value >= 1e6) return `${(value / 1e6).toFixed(2)}m`;
+  if (value >= 1e3) return `${(value / 1e3).toFixed(2)}k`;
+  return value.toFixed(2);
+}
+
+function pad(value, width) {
+  const text = String(value);
+  if (text.length >= width) return text.slice(0, width);
+  return text + " ".repeat(width - text.length);
+}
+
 function firstPositionalArg(args) {
   return Array.isArray(args) && args.length > 0 ? args[0] : "";
 }
@@ -174,6 +259,7 @@ function maybeOpenTail(ns, shouldOpen) {
 }
 
 function printHelp(ns) {
-  ns.tprint("Usage: run src/auto.js [TARGET] [--target HOST] [--tail] [--terminal]");
+  ns.tprint("Usage: run src/auto.js [TARGET] [--target HOST] [--rank] [--top N] [--tail] [--terminal]");
   ns.tprint("Chooses a rooted money target, deploys weaken/grow/hack workers, and keeps the loop moving.");
+  ns.tprint("Use --rank to print the target optimizer table without starting workers.");
 }
