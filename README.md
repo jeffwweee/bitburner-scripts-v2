@@ -73,6 +73,8 @@ run src/deploy.js weaken foodnstuff
 run src/deploy.js grow foodnstuff
 run src/deploy.js hack foodnstuff
 run src/buy-server.js
+run src/darkweb.js
+run src/orchestrator.js
 run src/auto.js
 ```
 
@@ -88,4 +90,26 @@ run src/auto.js foodnstuff
 run src/buy-server.js
 run src/buy-server.js 50
 run src/buy-server.js 0.5 16
+```
+
+`src/darkweb.js` buys TOR and port opener programs when the Singularity API is available:
+
+```text
+run src/darkweb.js
+run src/darkweb.js --budget 50
+run src/darkweb.js --all
+```
+
+`src/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `src/auto.js` running:
+
+```text
+run src/orchestrator.js
+run src/orchestrator.js --target foodnstuff
+run src/orchestrator.js --restart-auto
+```
+
+Run a one-shot cycle when you want to see what it would do without leaving it resident:
+
+```text
+run src/orchestrator.js --once
 ```

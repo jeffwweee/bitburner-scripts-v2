@@ -33,6 +33,12 @@
       "path": "src/buy-server.js"
     },
     {
+      "path": "src/darkweb.js"
+    },
+    {
+      "path": "src/orchestrator.js"
+    },
+    {
       "path": "src/auto.js"
     }
   ]

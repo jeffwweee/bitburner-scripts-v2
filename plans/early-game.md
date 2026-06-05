@@ -166,6 +166,8 @@ Build later:
 - `src/buy-server.js`: buy the largest affordable server within a budget.
 - `src/upgrade-home.js`: print recommended home RAM/core purchase when affordable.
 - `src/next.js`: summarize recommended next actions from current game state.
+- `src/darkweb.js`: purchase TOR and hacking programs when Singularity access is available.
+- `src/orchestrator.js`: coordinate darkweb purchases, rooting, server buying, and the money loop.
 
 ## First Build Slice
 
@@ -189,3 +191,4 @@ This gives us a useful toolkit before we build smarter automation.
 - worker scripts run locally and remotely.
 - `deploy.js` can use rooted RAM.
 - `auto.js` can keep money and XP flowing with minimal attention.
+- `orchestrator.js` can keep early-game infrastructure progressing with one command.
