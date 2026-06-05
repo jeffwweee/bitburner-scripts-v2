@@ -16,3 +16,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-05 23:49** - [Codex] Added darkweb purchase automation and an early-game orchestrator for buying servers, rooting hosts, purchasing hacking tools, and keeping the money loop running.
 - **2026-06-05 23:54** - [Codex] Added recommended Bitburner terminal aliases for pulling updates and running the orchestrator.
 - **2026-06-06 00:19** - [Codex] Made the orchestrator quieter by default, added tail-window options, improved hack target scoring, and made purchased-server replacement more conservative.
+- **2026-06-06 00:28** - [Codex] Made weaken, grow, and hack worker scripts log to script logs instead of terminal by default.
