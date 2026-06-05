@@ -86,6 +86,7 @@ run src/auto.js
 ```text
 run src/auto.js foodnstuff
 run src/auto.js --rank
+run src/auto.js --rank --strategy prep
 run src/auto.js --rank --top 20
 ```
 
@@ -110,6 +111,7 @@ run src/darkweb.js --all
 ```text
 run src/orchestrator.js
 run src/orchestrator.js --target foodnstuff
+run src/orchestrator.js --strategy prep
 run src/orchestrator.js --tail
 run src/orchestrator.js --restart-auto
 ```

@@ -19,3 +19,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 00:28** - [Codex] Made weaken, grow, and hack worker scripts log to script logs instead of terminal by default.
 - **2026-06-06 00:37** - [Codex] Added auto target ranking output and adjusted target scoring to prefer stronger prepared targets while still penalizing prep work.
 - **2026-06-06 00:42** - [Codex] Fixed auto target ranking units so per-second values account for Bitburner millisecond timings.
+- **2026-06-06 00:47** - [Codex] Added current and prep target-selection strategies to auto.js and threaded strategy selection through orchestrator.js.

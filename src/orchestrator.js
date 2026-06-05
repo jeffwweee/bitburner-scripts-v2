@@ -13,6 +13,7 @@ export async function main(ns) {
     ["darkweb-budget", 0.35],
     ["min-ram", 8],
     ["target", ""],
+    ["strategy", "current"],
     ["once", false],
     ["restart-auto", false],
     ["tail", false],
@@ -32,6 +33,7 @@ export async function main(ns) {
 
   const interval = Math.max(5000, Number(options.interval) || 60000);
   const target = String(options.target || "");
+  const strategy = normalizeStrategy(options.strategy);
   const terminal = Boolean(options.terminal);
 
   ns.disableLog("ALL");
@@ -64,7 +66,7 @@ export async function main(ns) {
     }
 
     if (!options["no-auto"]) {
-      ensureAuto(ns, target, Boolean(options["restart-auto"]), Boolean(options.tail), terminal);
+      ensureAuto(ns, target, strategy, Boolean(options["restart-auto"]), Boolean(options.tail), terminal);
     }
 
     if (options.once) {
@@ -100,7 +102,7 @@ async function runChild(ns, script, args) {
   return pid;
 }
 
-function ensureAuto(ns, target, restart, tail, terminal) {
+function ensureAuto(ns, target, strategy, restart, tail, terminal) {
   const running = ns.ps("home").filter((process) => process.filename === SCRIPTS.auto);
 
   if (running.length > 0 && !restart) {
@@ -114,6 +116,8 @@ function ensureAuto(ns, target, restart, tail, terminal) {
 
   const args = [
     ...(target ? ["--target", target] : []),
+    "--strategy",
+    strategy,
     ...(tail ? ["--tail"] : []),
     ...(terminal ? ["--terminal"] : []),
   ];
@@ -130,7 +134,7 @@ function ensureAuto(ns, target, restart, tail, terminal) {
     return;
   }
 
-  log(ns, `orchestrator: started ${SCRIPTS.auto}${target ? ` targeting ${target}` : ""}.`, terminal);
+  log(ns, `orchestrator: started ${SCRIPTS.auto}${target ? ` targeting ${target}` : ""} using ${strategy} strategy.`, terminal);
 }
 
 async function waitForPid(ns, pid) {
@@ -161,6 +165,12 @@ function maybeOpenTail(ns, shouldOpen) {
   }
 }
 
+function normalizeStrategy(value) {
+  const strategy = String(value || "current").toLowerCase();
+  if (strategy === "prep" || strategy === "prepared") return "prep";
+  return "current";
+}
+
 function printHelp(ns) {
   ns.tprint("Usage: run src/orchestrator.js [options]");
   ns.tprint("Coordinates darkweb purchases, rooting, purchased-server buying, and the money loop.");
@@ -170,6 +180,7 @@ function printHelp(ns) {
   ns.tprint("  --darkweb-budget N    Darkweb budget fraction/percent, default 0.35");
   ns.tprint("  --min-ram GB          Minimum purchased server RAM, default 8");
   ns.tprint("  --target HOST         Force auto.js target");
+  ns.tprint("  --strategy current|prep  Target selection mode, default current");
   ns.tprint("  --restart-auto        Restart auto.js each cycle to redeploy across new RAM");
   ns.tprint("  --tail                Open log windows for orchestrator and auto.js");
   ns.tprint("  --terminal            Also print orchestrator/auto status to terminal");

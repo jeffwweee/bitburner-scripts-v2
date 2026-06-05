@@ -12,6 +12,7 @@ const DEFAULT_RANK_LIMIT = 10;
 export async function main(ns) {
   const options = ns.flags([
     ["target", ""],
+    ["strategy", "current"],
     ["rank", false],
     ["top", DEFAULT_RANK_LIMIT],
     ["tail", false],
@@ -26,10 +27,11 @@ export async function main(ns) {
 
   const requestedTarget = String(options.target || firstPositionalArg(options._) || "");
   if (options.rank) {
-    printRankings(ns, Number(options.top) || DEFAULT_RANK_LIMIT);
+    printRankings(ns, Number(options.top) || DEFAULT_RANK_LIMIT, normalizeStrategy(options.strategy));
     return;
   }
 
+  const strategy = normalizeStrategy(options.strategy);
   let currentAction = "";
   let currentTarget = "";
 
@@ -37,7 +39,7 @@ export async function main(ns) {
   maybeOpenTail(ns, Boolean(options.tail));
 
   while (true) {
-    const target = requestedTarget || chooseTarget(ns);
+    const target = requestedTarget || chooseTarget(ns, strategy);
     if (!target) {
       log(ns, "auto: no rooted money target found yet. Run src/root.js or gain access to more servers.", Boolean(options.terminal));
       await ns.sleep(30000);
@@ -56,15 +58,15 @@ export async function main(ns) {
   }
 }
 
-function chooseTarget(ns) {
-  return getRankedTargets(ns)[0]?.host || "";
+function chooseTarget(ns, strategy) {
+  return getRankedTargets(ns, strategy)[0]?.host || "";
 }
 
 function scoreTarget(ns, host) {
   return analyzeTarget(ns, host).score;
 }
 
-function getRankedTargets(ns) {
+function getRankedTargets(ns, strategy = "current") {
   const hackingLevel = ns.getHackingLevel();
 
   return discoverServers(ns)
@@ -73,7 +75,7 @@ function getRankedTargets(ns) {
     .filter((host) => ns.getServerRequiredHackingLevel(host) <= hackingLevel)
     .map((host) => analyzeTarget(ns, host))
     .filter((target) => target.score > 0)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => compareTargets(a, b, strategy));
 }
 
 function analyzeTarget(ns, host) {
@@ -110,14 +112,31 @@ function analyzeTarget(ns, host) {
   };
 }
 
-function printRankings(ns, limit) {
-  const ranked = getRankedTargets(ns).slice(0, Math.max(1, limit));
+function compareTargets(a, b, strategy) {
+  if (strategy === "prep") {
+    if (b.preparedValuePerSecond !== a.preparedValuePerSecond) {
+      return b.preparedValuePerSecond - a.preparedValuePerSecond;
+    }
+  }
+
+  if (b.score !== a.score) return b.score - a.score;
+  return b.maxMoney - a.maxMoney;
+}
+
+function normalizeStrategy(value) {
+  const strategy = String(value || "current").toLowerCase();
+  if (strategy === "prep" || strategy === "prepared") return "prep";
+  return "current";
+}
+
+function printRankings(ns, limit, strategy) {
+  const ranked = getRankedTargets(ns, strategy).slice(0, Math.max(1, limit));
   if (ranked.length === 0) {
     ns.tprint("auto rank: no rooted, hackable money servers found.");
     return;
   }
 
-  ns.tprint("auto target rankings:");
+  ns.tprint(`auto target rankings (${strategy} strategy):`);
   ns.tprint("host                 score/s    prepped/s  maxMoney      money   sec+   chance  hack%");
 
   for (const target of ranked) {
@@ -259,7 +278,7 @@ function maybeOpenTail(ns, shouldOpen) {
 }
 
 function printHelp(ns) {
-  ns.tprint("Usage: run src/auto.js [TARGET] [--target HOST] [--rank] [--top N] [--tail] [--terminal]");
+  ns.tprint("Usage: run src/auto.js [TARGET] [--target HOST] [--strategy current|prep] [--rank] [--top N] [--tail] [--terminal]");
   ns.tprint("Chooses a rooted money target, deploys weaken/grow/hack workers, and keeps the loop moving.");
   ns.tprint("Use --rank to print the target optimizer table without starting workers.");
 }
