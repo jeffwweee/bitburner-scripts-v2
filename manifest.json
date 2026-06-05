@@ -30,6 +30,9 @@
       "path": "src/deploy.js"
     },
     {
+      "path": "src/buy-server.js"
+    },
+    {
       "path": "src/auto.js"
     }
   ]

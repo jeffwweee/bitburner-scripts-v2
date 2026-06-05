@@ -72,6 +72,7 @@ run src/info.js foodnstuff
 run src/deploy.js weaken foodnstuff
 run src/deploy.js grow foodnstuff
 run src/deploy.js hack foodnstuff
+run src/buy-server.js
 run src/auto.js
 ```
 
@@ -79,4 +80,12 @@ run src/auto.js
 
 ```text
 run src/auto.js foodnstuff
+```
+
+`src/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
+
+```text
+run src/buy-server.js
+run src/buy-server.js 50
+run src/buy-server.js 0.5 16
 ```
