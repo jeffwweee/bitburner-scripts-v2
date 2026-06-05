@@ -57,6 +57,8 @@ Recommended alias after the first successful run:
 
 ```text
 alias pull="run repo-update.js"
+alias orch="run src/orchestrator.js"
+alias orchonce="run src/orchestrator.js --once"
 ```
 
 After that, run `pull` in the Bitburner terminal to download the latest `manifest.json` and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
@@ -112,4 +114,5 @@ Run a one-shot cycle when you want to see what it would do without leaving it re
 
 ```text
 run src/orchestrator.js --once
+orchonce
 ```
