@@ -30,3 +30,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 09:40** - [Codex] Restored root `repo-update.js` as a compatibility shim after Bitburner raw GitHub bootstrap hit a 404 on the new `lib/` path.
 - **2026-06-06 09:50** - [Codex] Added `README.md` to the in-game manifest and made the updater recommend `cat README.md` after pulls.
 - **2026-06-06 10:00** - [Codex] Added `lib/status.js` for troubleshooting stuck early automation by reporting controllers, targets, worker threads, and action timings.
+- **2026-06-06 10:10** - [Codex] Introduced `lib/hack-strat.js`, made orchestrator start it as the hacking controller, and kept `lib/auto.js` as a compatibility launcher.

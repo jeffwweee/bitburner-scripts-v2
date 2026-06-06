@@ -100,10 +100,11 @@ run lib/buy-server.js
 run lib/darkweb.js
 run lib/casino.js
 run lib/orchestrator.js
+run lib/hack-strat.js
 run lib/auto.js
 ```
 
-`lib/bootstrap.js` is the super-early fresh-save/NG+ script for when `lib/auto.js` or `lib/orchestrator.js` do not fit comfortably in home RAM yet. It only uses `home`, chooses from fixed low-level targets, nukes 0-port servers, and runs one worker mode at a time:
+`lib/bootstrap.js` is the super-early fresh-save/NG+ script for when `lib/hack-strat.js` or `lib/orchestrator.js` do not fit comfortably in home RAM yet. It only uses `home`, chooses from fixed low-level targets, nukes 0-port servers, and runs one worker mode at a time:
 
 ```text
 run lib/bootstrap.js
@@ -111,16 +112,18 @@ run lib/bootstrap.js n00dles
 run lib/bootstrap.js --target foodnstuff --tail
 ```
 
-Use `lib/bootstrap.js` first, then move to `lib/auto.js` around 16-32GB home RAM, and `lib/orchestrator.js` once there is enough room for orchestration plus the money loop.
+Use `lib/bootstrap.js` first, then move to `lib/orchestrator.js` once there is enough room for orchestration plus the money loop. Orchestrator starts `lib/hack-strat.js` if it is not already running.
 
-`lib/auto.js` chooses a rooted money target automatically. You can also force a target:
+`lib/hack-strat.js` chooses a rooted money target automatically. You can also force a target:
 
 ```text
-run lib/auto.js foodnstuff
-run lib/auto.js --rank
-run lib/auto.js --rank --strategy prep
-run lib/auto.js --rank --top 20
+run lib/hack-strat.js foodnstuff
+run lib/hack-strat.js --rank
+run lib/hack-strat.js --rank --strategy prep
+run lib/hack-strat.js --rank --top 20
 ```
+
+`lib/auto.js` remains as a compatibility launcher for `lib/hack-strat.js`.
 
 If progress looks stuck, inspect live workers and timings:
 
@@ -129,7 +132,7 @@ run lib/status.js
 run lib/status.js foodnstuff --workers
 ```
 
-`lib/auto.js` deploys workers to rooted non-home servers and kills existing scripts on those non-home servers when it changes action or target. It does not run money workers on `home`; `home` is reserved for controllers.
+`lib/hack-strat.js` deploys workers to rooted non-home servers. It kills existing worker scripts when the selected action or target changes, but only adds workers when new servers become available. It does not run money workers on `home`; `home` is reserved for controllers.
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
@@ -160,14 +163,14 @@ By default it will open the Aevum casino, play blackjack toward `$10b`, save aft
 run lib/casino-lite.js --no-reload
 ```
 
-`lib/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `lib/auto.js` running:
+`lib/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and starts `lib/hack-strat.js` if needed:
 
 ```text
 run lib/orchestrator.js
 run lib/orchestrator.js --target foodnstuff
 run lib/orchestrator.js --strategy prep
 run lib/orchestrator.js --tail
-run lib/orchestrator.js --restart-auto
+run lib/orchestrator.js --restart-hack-strat
 ```
 
 Run a one-shot cycle when you want to see what it would do without leaving it resident:

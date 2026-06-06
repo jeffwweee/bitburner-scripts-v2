@@ -41,7 +41,7 @@ Build:
 - `worker/weaken.js`: loop `weaken(target)`.
 - `worker/grow.js`: loop `grow(target)`.
 - `worker/hack.js`: loop `hack(target)`.
-- `lib/bootstrap.js`: tiny home-only fresh-save loop for when `auto.js` and `orchestrator.js` do not fit yet.
+- `lib/bootstrap.js`: tiny home-only fresh-save loop for when `hack-strat.js` and `orchestrator.js` do not fit yet.
 - `worker/share.js`: optional loop for faction work later.
 - `lib/info.js`: print useful facts for a target, including money, security, required hacking level, growth, and available RAM.
 
@@ -56,7 +56,7 @@ How to use:
 Exit criteria:
 
 - Jef can manually run weaken/grow/hack loops against a target.
-- Jef can run `lib/bootstrap.js` on a fresh save or NG+ until enough RAM exists for `lib/auto.js`.
+- Jef can run `lib/bootstrap.js` on a fresh save or NG+ until enough RAM exists for `lib/hack-strat.js`.
 - Jef can inspect a server before choosing what to run.
 
 ## Phase 2 - Network Discovery
@@ -135,7 +135,7 @@ Goal: replace manual weaken/grow/hack decisions with a simple loop.
 
 Build:
 
-- `lib/auto.js`: choose a target and dispatch batches in a conservative cycle:
+- `lib/hack-strat.js`: choose a target and dispatch batches in a conservative cycle:
   - weaken if security is above minimum by a threshold
   - grow if money is below a threshold
   - hack if money and security are healthy
@@ -192,5 +192,5 @@ This gives us a useful toolkit before we build smarter automation.
 - `root.js` gains root where possible.
 - worker scripts run locally and remotely.
 - `deploy.js` can use rooted RAM.
-- `auto.js` can keep money and XP flowing with minimal attention.
+- `hack-strat.js` can keep money and XP flowing with minimal attention.
 - `orchestrator.js` can keep early-game infrastructure progressing with one command.

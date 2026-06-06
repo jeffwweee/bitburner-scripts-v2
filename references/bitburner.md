@@ -31,16 +31,17 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `repo-update.js` and `lib/repo-update.js`: in-game updater that downloads `manifest.json` and every listed file from GitHub raw with cache busting. The root copy is a compatibility shim for fresh bootstrap and old aliases.
 - `manifest.json`: explicit list of files pulled into Bitburner.
 - `worker/weaken.js`, `worker/grow.js`, `worker/hack.js`: tiny infinite-loop worker scripts.
-- `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/auto.js` or `lib/orchestrator.js` fit in RAM.
+- `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/hack-strat.js` or `lib/orchestrator.js` fit in RAM.
 - `lib/info.js`: single-server inspection.
 - `lib/status.js`: one-shot troubleshooting view for controller processes, target stats, worker threads, and action timings.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
 - `lib/deploy.js`: copies one worker script to rooted servers and fills available RAM.
-- `lib/auto.js`: chooses a rooted money target, decides weaken/grow/hack mode, and deploys workers.
+- `lib/hack-strat.js`: chooses a rooted money target, decides weaken/grow/hack mode, deploys workers, and adds workers on newly available servers without restarting.
+- `lib/auto.js`: compatibility launcher for `lib/hack-strat.js`.
 - `lib/buy-server.js`: conservative purchased-server buying/replacement using `ns.cloud`.
 - `lib/darkweb.js`: TOR and program purchase helper when Singularity is available.
-- `lib/orchestrator.js`: one-command early-game conductor for darkweb, rooting, purchased servers, and `lib/auto.js`.
+- `lib/orchestrator.js`: one-command early-game conductor for darkweb, rooting, purchased servers, and starting `lib/hack-strat.js` if needed.
 - `lib/casino.js`, `lib/casino-lite.js`: experimental manual-first Aevum blackjack helpers using game DOM access.
 
 ## Early-Save Strategy
@@ -49,9 +50,9 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Current save note as of 2026-06-06: Jef switched PCs without moving saves, so treat the save as a fresh start.
 - Current active low-RAM loop: `run lib/bootstrap.js`, with manual/character contribution from mugging for early money.
 - Immediate player plan: buy TOR manually, continue orchestrator and mugging, and let hacking progress until the `CSEC` invite path becomes available.
-- First loop: `pull`, run `lib/bootstrap.js`, run `lib/root.js` as port openers unlock, then move to `lib/auto.js` and later `lib/orchestrator.js` as home RAM allows.
-- Good early targets are usually low required-hacking money servers: `n00dles`, `foodnstuff`, `sigma-cosmetics`, `joesguns`, and `hong-fang-tea`; let `lib/auto.js --rank` verify with live state.
-- Target readiness rule: weaken until security is near minimum, grow until money is near max, then hack. Current `auto.js` thresholds are security above min + 5 and money below 75% max.
+- First loop: `pull`, run `lib/bootstrap.js`, run `lib/root.js` as port openers unlock, then move to `lib/orchestrator.js` as home RAM allows.
+- Good early targets are usually low required-hacking money servers: `n00dles`, `foodnstuff`, `sigma-cosmetics`, `joesguns`, and `hong-fang-tea`; let `lib/hack-strat.js --rank` verify with live state.
+- Target readiness rule: weaken until security is near minimum, grow until money is near max, then hack. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max.
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -69,7 +70,7 @@ run lib/bootstrap.js
 run lib/scan.js money
 run lib/root.js
 run lib/status.js
-run lib/auto.js --rank
+run lib/hack-strat.js --rank
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --once
 ```

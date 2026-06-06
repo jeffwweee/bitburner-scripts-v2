@@ -57,6 +57,9 @@
       "path": "lib/orchestrator.js"
     },
     {
+      "path": "lib/hack-strat.js"
+    },
+    {
       "path": "lib/auto.js"
     }
   ]
