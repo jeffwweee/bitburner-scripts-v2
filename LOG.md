@@ -31,3 +31,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 09:50** - [Codex] Added `README.md` to the in-game manifest and made the updater recommend `cat README.md` after pulls.
 - **2026-06-06 10:00** - [Codex] Added `lib/status.js` for troubleshooting stuck early automation by reporting controllers, targets, worker threads, and action timings.
 - **2026-06-06 10:10** - [Codex] Introduced `lib/hack-strat.js`, made orchestrator start it as the hacking controller, and kept `lib/auto.js` as a compatibility launcher.
+- **2026-06-06 10:20** - [Codex] Changed `lib/hack-strat.js` from all-one-action deployment to conservative mixed worker phases for grow and harvest.

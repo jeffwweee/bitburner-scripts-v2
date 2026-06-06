@@ -37,7 +37,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
 - `lib/deploy.js`: copies one worker script to rooted servers and fills available RAM.
-- `lib/hack-strat.js`: chooses a rooted money target, decides weaken/grow/hack mode, deploys workers, and adds workers on newly available servers without restarting.
+- `lib/hack-strat.js`: chooses a rooted money target, decides conservative weaken/grow/harvest worker mixes, deploys workers, and adds workers on newly available servers without restarting.
 - `lib/auto.js`: compatibility launcher for `lib/hack-strat.js`.
 - `lib/buy-server.js`: conservative purchased-server buying/replacement using `ns.cloud`.
 - `lib/darkweb.js`: TOR and program purchase helper when Singularity is available.
@@ -52,7 +52,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Immediate player plan: buy TOR manually, continue orchestrator and mugging, and let hacking progress until the `CSEC` invite path becomes available.
 - First loop: `pull`, run `lib/bootstrap.js`, run `lib/root.js` as port openers unlock, then move to `lib/orchestrator.js` as home RAM allows.
 - Good early targets are usually low required-hacking money servers: `n00dles`, `foodnstuff`, `sigma-cosmetics`, `joesguns`, and `hong-fang-tea`; let `lib/hack-strat.js --rank` verify with live state.
-- Target readiness rule: weaken until security is near minimum, grow until money is near max, then hack. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max.
+- Target readiness rule: weaken until security is near minimum, grow until money is near max, then harvest. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max; grow phase uses 80% grow / 20% weaken, harvest phase uses 15% hack / 60% grow / 25% weaken.
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.

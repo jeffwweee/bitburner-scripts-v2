@@ -135,17 +135,17 @@ Goal: replace manual weaken/grow/hack decisions with a simple loop.
 
 Build:
 
-- `lib/hack-strat.js`: choose a target and dispatch batches in a conservative cycle:
+- `lib/hack-strat.js`: choose a target and dispatch workers in a conservative mixed cycle:
   - weaken if security is above minimum by a threshold
-  - grow if money is below a threshold
-  - hack if money and security are healthy
+  - grow plus some weaken if money is below a threshold
+  - hack/grow/weaken mix if money and security are healthy
 - Keep it intentionally simple at first. One target, one global mode, no fancy timing.
 
 Suggested thresholds:
 
 - Weaken when `security > minSecurity + 5`.
-- Grow when `money < maxMoney * 0.75`.
-- Hack when `money >= maxMoney * 0.75` and security is acceptable.
+- Grow phase when `money < maxMoney * 0.75`: 80% grow, 20% weaken.
+- Harvest phase when `money >= maxMoney * 0.75` and security is acceptable: 15% hack, 60% grow, 25% weaken.
 
 Exit criteria:
 

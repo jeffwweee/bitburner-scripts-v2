@@ -132,7 +132,13 @@ run lib/status.js
 run lib/status.js foodnstuff --workers
 ```
 
-`lib/hack-strat.js` deploys workers to rooted non-home servers. It kills existing worker scripts when the selected action or target changes, but only adds workers when new servers become available. It does not run money workers on `home`; `home` is reserved for controllers.
+`lib/hack-strat.js` deploys workers to rooted non-home servers. It kills existing worker scripts when the selected phase or target changes, but only adds workers when new servers become available. It does not run money workers on `home`; `home` is reserved for controllers.
+
+Current `lib/hack-strat.js` phases are intentionally conservative:
+
+- `weaken`: 100% weaken when security is high.
+- `grow`: 80% grow and 20% weaken when money is low.
+- `harvest`: 15% hack, 60% grow, and 25% weaken when money/security are healthy.
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
