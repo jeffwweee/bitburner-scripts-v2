@@ -111,12 +111,13 @@ run src/darkweb.js --all
 
 ```text
 run src/casino.js
+run src/casino-lite.js
 ```
 
 By default it will open the Aevum casino, play blackjack toward `$10b`, save after wins, and reload after a loss. Use `--no-reload` if you want a safer dry experiment that stops after the first losing hand:
 
 ```text
-run src/casino.js --no-reload
+run src/casino-lite.js --no-reload
 ```
 
 `src/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `src/auto.js` running:

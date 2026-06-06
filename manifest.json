@@ -39,6 +39,9 @@
       "path": "src/casino.js"
     },
     {
+      "path": "src/casino-lite.js"
+    },
+    {
       "path": "src/orchestrator.js"
     },
     {
