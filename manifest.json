@@ -24,6 +24,9 @@
       "path": "worker/hack.js"
     },
     {
+      "path": "worker/share.js"
+    },
+    {
       "path": "lib/bootstrap.js"
     },
     {
@@ -31,6 +34,9 @@
     },
     {
       "path": "lib/status.js"
+    },
+    {
+      "path": "lib/share.js"
     },
     {
       "path": "lib/scan.js"

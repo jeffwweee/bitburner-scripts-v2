@@ -91,6 +91,7 @@ cat README.md
 run lib/scan.js money
 run lib/root.js
 run lib/bootstrap.js
+run lib/share.js
 run lib/info.js foodnstuff
 run lib/status.js foodnstuff
 run lib/deploy.js weaken foodnstuff
@@ -147,6 +148,14 @@ Current `lib/hack-strat.js` phases are intentionally conservative:
 - `grow`: 80% grow and 20% weaken when money is low.
 - `harvest`: 15% hack, 60% grow, and 25% weaken when money/security are healthy.
 
+`lib/share.js` keeps a small `worker/share.js` process running on `home` for faction reputation boost. Orchestrator starts it before `lib/hack-strat.js` so it claims a small RAM slice first:
+
+```text
+run lib/share.js --fraction 0.05
+run lib/orchestrator.js --share-fraction 0.05
+run lib/orchestrator.js --no-share
+```
+
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
 ```text
@@ -183,6 +192,7 @@ run lib/orchestrator.js
 run lib/orchestrator.js --target foodnstuff
 run lib/orchestrator.js --strategy prep
 run lib/orchestrator.js --home-reserve 64
+run lib/orchestrator.js --share-fraction 0.1
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --restart-hack-strat
 ```

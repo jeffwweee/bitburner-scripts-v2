@@ -31,9 +31,11 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `repo-update.js` and `lib/repo-update.js`: in-game updater that downloads `manifest.json` and every listed file from GitHub raw with cache busting. The root copy is a compatibility shim for fresh bootstrap and old aliases.
 - `manifest.json`: explicit list of files pulled into Bitburner.
 - `worker/weaken.js`, `worker/grow.js`, `worker/hack.js`: tiny infinite-loop worker scripts.
+- `worker/share.js`: tiny infinite-loop share worker for faction reputation boost.
 - `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/hack-strat.js` or `lib/orchestrator.js` fit in RAM.
 - `lib/info.js`: single-server inspection.
 - `lib/status.js`: one-shot troubleshooting view for controller processes, target stats, worker threads, and action timings.
+- `lib/share.js`: keeps a small share worker running on home; orchestrator starts it before `hack-strat` by default.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
 - `lib/deploy.js`: copies one worker script to rooted servers and fills available RAM.
@@ -54,6 +56,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Good early targets are usually low required-hacking money servers: `n00dles`, `foodnstuff`, `sigma-cosmetics`, `joesguns`, and `hong-fang-tea`; let `lib/hack-strat.js --rank` verify with live state.
 - Target readiness rule: weaken until security is near minimum, grow until money is near max, then harvest. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max; grow phase uses 80% grow / 20% weaken, harvest phase uses 15% hack / 60% grow / 25% weaken.
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
+- Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve a small home RAM slice for `ns.share()` once faction work matters.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -71,6 +74,7 @@ run lib/bootstrap.js
 run lib/scan.js money
 run lib/root.js
 run lib/status.js
+run lib/share.js
 run lib/hack-strat.js --rank
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --once

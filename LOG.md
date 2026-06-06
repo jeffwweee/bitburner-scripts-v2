@@ -36,3 +36,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 10:40** - [Codex] Fixed post-augmentation hack-strat stalls by copying worker files before RAM checks and allowing home worker deployment above a configurable reserve.
 - **2026-06-06 10:45** - [Codex] Reverted orchestrator root logging to quiet-by-default after confirming the observed issue was worker deployment, not root visibility.
 - **2026-06-06 10:55** - [Codex] Made casino helpers stop cleanly on goal/casino-cap UI states instead of throwing when the final blackjack hand has no detectable outcome.
+- **2026-06-06 11:05** - [Codex] Added home-based `lib/share.js` and `worker/share.js` for a small faction reputation RAM boost, started by orchestrator before `hack-strat`.
