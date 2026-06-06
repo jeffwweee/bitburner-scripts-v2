@@ -55,6 +55,13 @@ Project scaffold is initialized. The current focus is building an early game scr
 Bootstrap the updater from the Bitburner terminal:
 
 ```text
+wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/repo-update.js?t=202606060940 repo-update.js
+run repo-update.js
+```
+
+The root updater is kept as a compatibility shim. After the first successful pull, prefer the `lib/` updater:
+
+```text
 wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/lib/repo-update.js lib/repo-update.js
 run lib/repo-update.js
 ```

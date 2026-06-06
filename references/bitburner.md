@@ -28,7 +28,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 
 ## Current Repo Model
 
-- `lib/repo-update.js`: in-game updater that downloads `manifest.json` and every listed file from GitHub raw with cache busting.
+- `repo-update.js` and `lib/repo-update.js`: in-game updater that downloads `manifest.json` and every listed file from GitHub raw with cache busting. The root copy is a compatibility shim for fresh bootstrap and old aliases.
 - `manifest.json`: explicit list of files pulled into Bitburner.
 - `worker/weaken.js`, `worker/grow.js`, `worker/hack.js`: tiny infinite-loop worker scripts.
 - `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/auto.js` or `lib/orchestrator.js` fit in RAM.

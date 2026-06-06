@@ -3,6 +3,9 @@
   "baseUrl": "https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/",
   "files": [
     {
+      "path": "repo-update.js"
+    },
+    {
       "path": "lib/repo-update.js"
     },
     {
