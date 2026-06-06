@@ -77,6 +77,7 @@ run src/deploy.js grow foodnstuff
 run src/deploy.js hack foodnstuff
 run src/buy-server.js
 run src/darkweb.js
+run src/casino.js
 run src/orchestrator.js
 run src/auto.js
 ```
@@ -104,6 +105,18 @@ run src/buy-server.js 0.5 16
 run src/darkweb.js
 run src/darkweb.js --budget 50
 run src/darkweb.js --all
+```
+
+`src/casino.js` is an experimental blackjack helper inspired by Alain Bryden's casino flow. For the first manual pass, save up `$200k`, manually travel to `Aevum`, then run:
+
+```text
+run src/casino.js
+```
+
+By default it will open the Aevum casino, play blackjack toward `$10b`, save after wins, and reload after a loss. Use `--no-reload` if you want a safer dry experiment that stops after the first losing hand:
+
+```text
+run src/casino.js --no-reload --tail
 ```
 
 `src/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `src/auto.js` running:

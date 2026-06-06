@@ -36,6 +36,9 @@
       "path": "src/darkweb.js"
     },
     {
+      "path": "src/casino.js"
+    },
+    {
       "path": "src/orchestrator.js"
     },
     {
