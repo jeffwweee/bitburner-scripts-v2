@@ -6,22 +6,22 @@ export async function main(ns) {
   ]);
 
   if (options.help) {
-    ns.tprint("Usage: run src/hack.js TARGET [--terminal]");
+    ns.tprint("Usage: run worker/weaken.js TARGET [--terminal]");
     return;
   }
 
   const target = firstPositionalArg(options._);
 
   if (!target) {
-    ns.tprint("Usage: run src/hack.js TARGET");
+    ns.tprint("Usage: run worker/weaken.js TARGET");
     return;
   }
 
   ns.disableLog("ALL");
-  log(ns, `hacking ${target}`, Boolean(options.terminal));
+  log(ns, `weakening ${target}`, Boolean(options.terminal));
 
   while (true) {
-    await ns.hack(target);
+    await ns.weaken(target);
   }
 }
 

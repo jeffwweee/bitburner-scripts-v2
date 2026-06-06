@@ -3,49 +3,52 @@
   "baseUrl": "https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/",
   "files": [
     {
-      "path": "repo-update.js"
+      "path": "lib/repo-update.js"
     },
     {
       "path": "manifest.json"
     },
     {
-      "path": "src/weaken.js"
+      "path": "worker/weaken.js"
     },
     {
-      "path": "src/grow.js"
+      "path": "worker/grow.js"
     },
     {
-      "path": "src/hack.js"
+      "path": "worker/hack.js"
     },
     {
-      "path": "src/info.js"
+      "path": "lib/bootstrap.js"
     },
     {
-      "path": "src/scan.js"
+      "path": "lib/info.js"
     },
     {
-      "path": "src/root.js"
+      "path": "lib/scan.js"
     },
     {
-      "path": "src/deploy.js"
+      "path": "lib/root.js"
     },
     {
-      "path": "src/buy-server.js"
+      "path": "lib/deploy.js"
     },
     {
-      "path": "src/darkweb.js"
+      "path": "lib/buy-server.js"
     },
     {
-      "path": "src/casino.js"
+      "path": "lib/darkweb.js"
     },
     {
-      "path": "src/casino-lite.js"
+      "path": "lib/casino.js"
     },
     {
-      "path": "src/orchestrator.js"
+      "path": "lib/casino-lite.js"
     },
     {
-      "path": "src/auto.js"
+      "path": "lib/orchestrator.js"
+    },
+    {
+      "path": "lib/auto.js"
     }
   ]
 }

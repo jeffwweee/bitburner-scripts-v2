@@ -22,6 +22,12 @@ The project should help Jef progress through Bitburner as autonomously as possib
 - Documentation for how scripts work and when to use them.
 - Iterative improvements as new Bitburner systems unlock.
 
+## Layout
+
+- `lib/`: player-facing scripts. Run these from the Bitburner terminal.
+- `worker/`: tiny worker scripts launched by `lib/` controllers.
+- `helper/`: shared helper modules when reuse is worth the RAM/import tradeoff.
+
 ## Non-Goals
 
 - Perfect endgame automation from day one.
@@ -49,91 +55,102 @@ Project scaffold is initialized. The current focus is building an early game scr
 Bootstrap the updater from the Bitburner terminal:
 
 ```text
-wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/repo-update.js repo-update.js
-run repo-update.js
+wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/lib/repo-update.js lib/repo-update.js
+run lib/repo-update.js
 ```
 
 Recommended alias after the first successful run:
 
 ```text
-alias pull="run repo-update.js"
-alias orch="run src/orchestrator.js"
-alias orchtail="run src/orchestrator.js --tail"
-alias orchonce="run src/orchestrator.js --once"
+alias pull="run lib/repo-update.js"
+alias orch="run lib/orchestrator.js"
+alias orchtail="run lib/orchestrator.js --tail"
+alias orchonce="run lib/orchestrator.js --once"
 ```
 
 After that, run `pull` in the Bitburner terminal to download the latest `manifest.json` and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
 
-`repo-update.js` adds a timestamp query to downloads so GitHub raw cache should not delay manifest or script updates.
+`lib/repo-update.js` adds a timestamp query to downloads so GitHub raw cache should not delay manifest or script updates.
 
 ## Early Game Commands
 
 ```text
-run src/scan.js money
-run src/root.js
-run src/info.js foodnstuff
-run src/deploy.js weaken foodnstuff
-run src/deploy.js grow foodnstuff
-run src/deploy.js hack foodnstuff
-run src/buy-server.js
-run src/darkweb.js
-run src/casino.js
-run src/orchestrator.js
-run src/auto.js
+run lib/scan.js money
+run lib/root.js
+run lib/bootstrap.js
+run lib/info.js foodnstuff
+run lib/deploy.js weaken foodnstuff
+run lib/deploy.js grow foodnstuff
+run lib/deploy.js hack foodnstuff
+run lib/buy-server.js
+run lib/darkweb.js
+run lib/casino.js
+run lib/orchestrator.js
+run lib/auto.js
 ```
 
-`src/auto.js` chooses a rooted money target automatically. You can also force a target:
+`lib/bootstrap.js` is the super-early fresh-save/NG+ script for when `lib/auto.js` or `lib/orchestrator.js` do not fit comfortably in home RAM yet. It only uses `home`, chooses from fixed low-level targets, nukes 0-port servers, and runs one worker mode at a time:
 
 ```text
-run src/auto.js foodnstuff
-run src/auto.js --rank
-run src/auto.js --rank --strategy prep
-run src/auto.js --rank --top 20
+run lib/bootstrap.js
+run lib/bootstrap.js n00dles
+run lib/bootstrap.js --target foodnstuff --tail
 ```
 
-`src/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
+Use `lib/bootstrap.js` first, then move to `lib/auto.js` around 16-32GB home RAM, and `lib/orchestrator.js` once there is enough room for orchestration plus the money loop.
+
+`lib/auto.js` chooses a rooted money target automatically. You can also force a target:
 
 ```text
-run src/buy-server.js
-run src/buy-server.js 50
-run src/buy-server.js 0.5 16
+run lib/auto.js foodnstuff
+run lib/auto.js --rank
+run lib/auto.js --rank --strategy prep
+run lib/auto.js --rank --top 20
 ```
 
-`src/darkweb.js` buys TOR and port opener programs when the Singularity API is available:
+`lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
 ```text
-run src/darkweb.js
-run src/darkweb.js --budget 50
-run src/darkweb.js --all
+run lib/buy-server.js
+run lib/buy-server.js 50
+run lib/buy-server.js 0.5 16
 ```
 
-`src/casino.js` is an experimental blackjack helper inspired by Alain Bryden's casino flow. For the first manual pass, save up `$200k`, manually travel to `Aevum`, then run:
+`lib/darkweb.js` buys TOR and port opener programs when the Singularity API is available:
 
 ```text
-run src/casino.js
-run src/casino-lite.js
+run lib/darkweb.js
+run lib/darkweb.js --budget 50
+run lib/darkweb.js --all
+```
+
+`lib/casino.js` is an experimental blackjack helper inspired by Alain Bryden's casino flow. For the first manual pass, save up `$200k`, manually travel to `Aevum`, then run:
+
+```text
+run lib/casino.js
+run lib/casino-lite.js
 ```
 
 By default it will open the Aevum casino, play blackjack toward `$10b`, save after wins, and reload after a loss. Use `--no-reload` if you want a safer dry experiment that stops after the first losing hand:
 
 ```text
-run src/casino-lite.js --no-reload
+run lib/casino-lite.js --no-reload
 ```
 
-`src/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `src/auto.js` running:
+`lib/orchestrator.js` is the early-game conductor. It tries darkweb purchases, roots servers, buys purchased servers, and keeps `lib/auto.js` running:
 
 ```text
-run src/orchestrator.js
-run src/orchestrator.js --target foodnstuff
-run src/orchestrator.js --strategy prep
-run src/orchestrator.js --tail
-run src/orchestrator.js --restart-auto
+run lib/orchestrator.js
+run lib/orchestrator.js --target foodnstuff
+run lib/orchestrator.js --strategy prep
+run lib/orchestrator.js --tail
+run lib/orchestrator.js --restart-auto
 ```
 
 Run a one-shot cycle when you want to see what it would do without leaving it resident:
 
 ```text
-run src/orchestrator.js --once
+run lib/orchestrator.js --once
 orchonce
 ```
 

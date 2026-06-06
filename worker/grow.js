@@ -6,14 +6,14 @@ export async function main(ns) {
   ]);
 
   if (options.help) {
-    ns.tprint("Usage: run src/grow.js TARGET [--terminal]");
+    ns.tprint("Usage: run worker/grow.js TARGET [--terminal]");
     return;
   }
 
   const target = firstPositionalArg(options._);
 
   if (!target) {
-    ns.tprint("Usage: run src/grow.js TARGET");
+    ns.tprint("Usage: run worker/grow.js TARGET");
     return;
   }
 

@@ -13,19 +13,19 @@ Goal: make the repo easy to pull into Bitburner.
 
 Already started:
 
-- `repo-update.js` downloads every file listed in `manifest.json`.
+- `lib/repo-update.js` downloads every file listed in `manifest.json`.
 - `manifest.json` is the explicit list of in-game files.
 
 Next actions:
 
-- Keep every runnable Bitburner script under `src/`.
+- Keep player-facing Bitburner scripts under `lib/`, worker scripts under `worker/`, and reusable modules under `helper/`.
 - Add new runnable scripts to `manifest.json`.
 - In Bitburner, run:
 
 ```text
-wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/repo-update.js repo-update.js
-run repo-update.js
-alias pull="run repo-update.js"
+wget https://raw.githubusercontent.com/jeffwweee/bitburner-scripts-v2/master/lib/repo-update.js lib/repo-update.js
+run lib/repo-update.js
+alias pull="run lib/repo-update.js"
 ```
 
 Exit criteria:
@@ -38,11 +38,12 @@ Goal: get a few simple scripts that are easy to understand and useful immediatel
 
 Build:
 
-- `src/weaken.js`: loop `weaken(target)`.
-- `src/grow.js`: loop `grow(target)`.
-- `src/hack.js`: loop `hack(target)`.
-- `src/share.js`: optional loop for faction work later.
-- `src/info.js`: print useful facts for a target, including money, security, required hacking level, growth, and available RAM.
+- `worker/weaken.js`: loop `weaken(target)`.
+- `worker/grow.js`: loop `grow(target)`.
+- `worker/hack.js`: loop `hack(target)`.
+- `lib/bootstrap.js`: tiny home-only fresh-save loop for when `auto.js` and `orchestrator.js` do not fit yet.
+- `worker/share.js`: optional loop for faction work later.
+- `lib/info.js`: print useful facts for a target, including money, security, required hacking level, growth, and available RAM.
 
 How to use:
 
@@ -55,6 +56,7 @@ How to use:
 Exit criteria:
 
 - Jef can manually run weaken/grow/hack loops against a target.
+- Jef can run `lib/bootstrap.js` on a fresh save or NG+ until enough RAM exists for `lib/auto.js`.
 - Jef can inspect a server before choosing what to run.
 
 ## Phase 2 - Network Discovery
@@ -63,7 +65,7 @@ Goal: stop manually remembering where servers are.
 
 Build:
 
-- `src/scan.js`: recursively scan the network and print a sorted table.
+- `lib/scan.js`: recursively scan the network and print a sorted table.
 - Include hostname, required hacking level, money max, min security, current security, required ports, RAM, and whether root access exists.
 - Optionally support arguments:
   - `run scan.js`
@@ -90,7 +92,7 @@ Goal: automatically open ports and nuke servers as tools unlock.
 
 Build:
 
-- `src/root.js`: scan all servers, run available port openers, call `nuke()`, and report newly rooted servers.
+- `lib/root.js`: scan all servers, run available port openers, call `nuke()`, and report newly rooted servers.
 - It should be safe to run repeatedly.
 
 Player actions:
@@ -108,7 +110,7 @@ Goal: use rooted server RAM without manually copying scripts everywhere.
 
 Build:
 
-- `src/deploy.js`: copy worker scripts to rooted servers and fill their RAM with one chosen action against one chosen target.
+- `lib/deploy.js`: copy worker scripts to rooted servers and fill their RAM with one chosen action against one chosen target.
 - First version can be simple:
   - kill existing scripts on rooted purchased/non-home servers
   - copy `weaken.js`, `grow.js`, `hack.js`
@@ -133,7 +135,7 @@ Goal: replace manual weaken/grow/hack decisions with a simple loop.
 
 Build:
 
-- `src/auto.js`: choose a target and dispatch batches in a conservative cycle:
+- `lib/auto.js`: choose a target and dispatch batches in a conservative cycle:
   - weaken if security is above minimum by a threshold
   - grow if money is below a threshold
   - hack if money and security are healthy
@@ -163,22 +165,22 @@ Priorities:
 
 Build later:
 
-- `src/buy-server.js`: buy the largest affordable server within a budget.
-- `src/upgrade-home.js`: print recommended home RAM/core purchase when affordable.
-- `src/next.js`: summarize recommended next actions from current game state.
-- `src/darkweb.js`: purchase TOR and hacking programs when Singularity access is available.
-- `src/orchestrator.js`: coordinate darkweb purchases, rooting, server buying, and the money loop.
+- `lib/buy-server.js`: buy the largest affordable server within a budget.
+- `lib/upgrade-home.js`: print recommended home RAM/core purchase when affordable.
+- `lib/next.js`: summarize recommended next actions from current game state.
+- `lib/darkweb.js`: purchase TOR and hacking programs when Singularity access is available.
+- `lib/orchestrator.js`: coordinate darkweb purchases, rooting, server buying, and the money loop.
 
 ## First Build Slice
 
 Implement these first, in order:
 
-1. `src/weaken.js`
-2. `src/grow.js`
-3. `src/hack.js`
-4. `src/info.js`
-5. `src/scan.js`
-6. `src/root.js`
+1. `worker/weaken.js`
+2. `worker/grow.js`
+3. `worker/hack.js`
+4. `lib/info.js`
+5. `lib/scan.js`
+6. `lib/root.js`
 7. update `manifest.json`
 
 This gives us a useful toolkit before we build smarter automation.
