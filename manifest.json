@@ -12,6 +12,9 @@
       "path": "manifest.json"
     },
     {
+      "path": "README.md"
+    },
+    {
       "path": "worker/weaken.js"
     },
     {

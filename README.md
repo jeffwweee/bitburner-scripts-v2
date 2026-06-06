@@ -75,9 +75,15 @@ alias orchtail="run lib/orchestrator.js --tail"
 alias orchonce="run lib/orchestrator.js --once"
 ```
 
-After that, run `pull` in the Bitburner terminal to download the latest `manifest.json` and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
+After that, run `pull` in the Bitburner terminal to download the latest `manifest.json`, `README.md`, and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
 
 `lib/repo-update.js` adds a timestamp query to downloads so GitHub raw cache should not delay manifest or script updates.
+
+After pulling, run this in the Bitburner terminal for quick usage guidance:
+
+```text
+cat README.md
+```
 
 ## Early Game Commands
 
