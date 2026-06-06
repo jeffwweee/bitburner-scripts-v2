@@ -1,6 +1,4 @@
-const CITY = "Aevum";
 const CASINO = "Iker Molina Casino";
-const TRAVEL_COST = 200000;
 const DEFAULT_GOAL = 1e10;
 const DEFAULT_MAX_BET = 1e8;
 
@@ -9,10 +7,8 @@ export async function main(ns) {
   const options = ns.flags([
     ["goal", DEFAULT_GOAL],
     ["max-bet", DEFAULT_MAX_BET],
-    ["min-money", TRAVEL_COST],
     ["basic", false],
     ["no-reload", false],
-    ["tail", false],
     ["terminal", true],
     ["help", false],
   ]);
@@ -23,24 +19,10 @@ export async function main(ns) {
   }
 
   ns.disableLog("ALL");
-  maybeOpenTail(ns, Boolean(options.tail));
 
   const goal = Math.max(1, Number(options.goal) || DEFAULT_GOAL);
   const maxBet = Math.max(1, Number(options["max-bet"]) || DEFAULT_MAX_BET);
-  const minMoney = Math.max(0, Number(options["min-money"]) || TRAVEL_COST);
   const terminal = Boolean(options.terminal);
-
-  const player = ns.getPlayer();
-  const startingMoney = getMoney(ns);
-  if (startingMoney < minMoney) {
-    log(ns, `casino: wait until home money reaches ${formatMoney(minMoney)}. Current: ${formatMoney(startingMoney)}.`, terminal);
-    return;
-  }
-
-  if (player.city !== CITY) {
-    log(ns, `casino: travel manually to ${CITY} after reaching ${formatMoney(TRAVEL_COST)}, then rerun this script.`, terminal);
-    return;
-  }
 
   const dom = getDom();
   if (!dom.document || !dom.window) {
@@ -56,9 +38,14 @@ export async function main(ns) {
   await click(ns, saveButton);
   log(ns, "casino: saved before gambling. Wins will be saved; losses reload unless --no-reload is set.", terminal);
 
-  let peakMoney = getMoney(ns);
-  while (getMoney(ns) < goal) {
-    const money = getMoney(ns);
+  let peakMoney = readOverviewMoney(dom.document);
+  while (peakMoney < goal) {
+    const money = readOverviewMoney(dom.document);
+    if (money <= 0) {
+      log(ns, "casino: could not read current money from the Overview panel. Make sure the Overview is visible, then rerun.", terminal);
+      return;
+    }
+
     const bet = Math.floor(Math.min(maxBet, money * 0.9));
     if (bet < 1) {
       await handleLoss(ns, dom.window, options);
@@ -72,14 +59,14 @@ export async function main(ns) {
 
     const outcome = await playHand(ns, dom.document, Boolean(options.basic));
     if (outcome === "win") {
-      const newMoney = getMoney(ns);
+      const newMoney = readOverviewMoney(dom.document);
       if (newMoney > peakMoney) {
         peakMoney = newMoney;
         await click(ns, saveButton);
         log(ns, `casino: won, saved at ${formatMoney(newMoney)}.`, terminal);
       }
     } else if (outcome === "lose") {
-      log(ns, `casino: lost a hand at ${formatMoney(getMoney(ns))}.`, terminal);
+      log(ns, `casino: lost a hand at ${formatMoney(readOverviewMoney(dom.document))}.`, terminal);
       await handleLoss(ns, dom.window, options);
       return;
     } else if (outcome === "kicked") {
@@ -90,7 +77,7 @@ export async function main(ns) {
     await ns.sleep(1);
   }
 
-  log(ns, `casino: goal reached. Home money is ${formatMoney(getMoney(ns))}.`, terminal);
+  log(ns, `casino: goal reached. Home money is ${formatMoney(readOverviewMoney(dom.document))}.`, terminal);
 }
 
 async function openBlackjack(ns, document) {
@@ -242,8 +229,16 @@ function getDom() {
   };
 }
 
-function getMoney(ns) {
-  return ns.getServerMoneyAvailable("home");
+function readOverviewMoney(document) {
+  const text = document.body.innerText;
+  const match = text.match(/Money:\s*\$([\d.,]+)\s*([kmbtq]?)/i)
+    || text.match(/\$([\d.,]+)\s*([kmbtq]?)/i);
+  if (!match) return 0;
+
+  const value = Number(match[1].replace(/,/g, ""));
+  const suffix = match[2].toLowerCase();
+  const multipliers = { k: 1e3, m: 1e6, b: 1e9, t: 1e12, q: 1e15 };
+  return value * (multipliers[suffix] || 1);
 }
 
 function formatMoney(value) {
@@ -259,15 +254,6 @@ function log(ns, message, terminal) {
   if (terminal) ns.tprint(message);
 }
 
-function maybeOpenTail(ns, shouldOpen) {
-  if (!shouldOpen) return;
-  if (ns.ui && typeof ns.ui.openTail === "function") {
-    ns.ui.openTail();
-  } else if (typeof ns.tail === "function") {
-    ns.tail();
-  }
-}
-
 function printHelp(ns) {
   ns.tprint("Usage: run src/casino.js [options]");
   ns.tprint("Manual-first casino experiment: travel to Aevum after $200k, then run this to automate blackjack.");
@@ -276,5 +262,4 @@ function printHelp(ns) {
   ns.tprint("  --max-bet N     Maximum blackjack bet, default $100m");
   ns.tprint("  --basic         Use simple stay-on-17 strategy instead of dealer-aware strategy");
   ns.tprint("  --no-reload     Stop on loss instead of reloading the last save");
-  ns.tprint("  --tail          Open a log window");
 }

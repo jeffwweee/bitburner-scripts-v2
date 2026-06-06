@@ -21,3 +21,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 00:42** - [Codex] Fixed auto target ranking units so per-second values account for Bitburner millisecond timings.
 - **2026-06-06 00:47** - [Codex] Added current and prep target-selection strategies to auto.js and threaded strategy selection through orchestrator.js.
 - **2026-06-06 08:10** - [Codex] Added an experimental casino blackjack helper with manual-first Aevum travel, save-on-win, and reload-on-loss behavior.
+- **2026-06-06 08:26** - [Codex] Reduced casino helper RAM by removing Netscript city and money checks from the manual-first flow.
