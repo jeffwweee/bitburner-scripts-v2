@@ -29,3 +29,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 09:30** - [Codex] Refactored script layout into `lib/` for player-facing scripts including the updater, `worker/` for tiny workers, and `helper/` for shared modules.
 - **2026-06-06 09:40** - [Codex] Restored root `repo-update.js` as a compatibility shim after Bitburner raw GitHub bootstrap hit a 404 on the new `lib/` path.
 - **2026-06-06 09:50** - [Codex] Added `README.md` to the in-game manifest and made the updater recommend `cat README.md` after pulls.
+- **2026-06-06 10:00** - [Codex] Added `lib/status.js` for troubleshooting stuck early automation by reporting controllers, targets, worker threads, and action timings.

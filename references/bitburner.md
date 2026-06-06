@@ -33,6 +33,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `worker/weaken.js`, `worker/grow.js`, `worker/hack.js`: tiny infinite-loop worker scripts.
 - `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/auto.js` or `lib/orchestrator.js` fit in RAM.
 - `lib/info.js`: single-server inspection.
+- `lib/status.js`: one-shot troubleshooting view for controller processes, target stats, worker threads, and action timings.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
 - `lib/deploy.js`: copies one worker script to rooted servers and fills available RAM.
@@ -67,6 +68,7 @@ alias orchonce="run lib/orchestrator.js --once"
 run lib/bootstrap.js
 run lib/scan.js money
 run lib/root.js
+run lib/status.js
 run lib/auto.js --rank
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --once

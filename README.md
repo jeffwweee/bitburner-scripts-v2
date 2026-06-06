@@ -92,6 +92,7 @@ run lib/scan.js money
 run lib/root.js
 run lib/bootstrap.js
 run lib/info.js foodnstuff
+run lib/status.js foodnstuff
 run lib/deploy.js weaken foodnstuff
 run lib/deploy.js grow foodnstuff
 run lib/deploy.js hack foodnstuff
@@ -120,6 +121,15 @@ run lib/auto.js --rank
 run lib/auto.js --rank --strategy prep
 run lib/auto.js --rank --top 20
 ```
+
+If progress looks stuck, inspect live workers and timings:
+
+```text
+run lib/status.js
+run lib/status.js foodnstuff --workers
+```
+
+`lib/auto.js` deploys workers to rooted non-home servers and kills existing scripts on those non-home servers when it changes action or target. It does not run money workers on `home`; `home` is reserved for controllers.
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
