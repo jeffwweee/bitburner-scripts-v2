@@ -132,7 +132,14 @@ run lib/status.js
 run lib/status.js foodnstuff --workers
 ```
 
-`lib/hack-strat.js` deploys workers to rooted non-home servers. It kills existing worker scripts when the selected phase or target changes, but only adds workers when new servers become available. It does not run money workers on `home`; `home` is reserved for controllers.
+`lib/hack-strat.js` deploys workers to rooted servers and spare home RAM. It kills existing worker scripts when the selected phase or target changes, but only adds workers when new servers become available.
+
+After augmentation or once home RAM is large, `lib/hack-strat.js` can also use spare home RAM while reserving 32GB by default for controllers. Control this through orchestrator:
+
+```text
+run lib/orchestrator.js --home-reserve 64
+run lib/orchestrator.js --no-home
+```
 
 Current `lib/hack-strat.js` phases are intentionally conservative:
 
@@ -175,6 +182,7 @@ run lib/casino-lite.js --no-reload
 run lib/orchestrator.js
 run lib/orchestrator.js --target foodnstuff
 run lib/orchestrator.js --strategy prep
+run lib/orchestrator.js --home-reserve 64
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --restart-hack-strat
 ```

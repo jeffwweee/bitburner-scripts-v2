@@ -33,3 +33,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 10:10** - [Codex] Introduced `lib/hack-strat.js`, made orchestrator start it as the hacking controller, and kept `lib/auto.js` as a compatibility launcher.
 - **2026-06-06 10:20** - [Codex] Changed `lib/hack-strat.js` from all-one-action deployment to conservative mixed worker phases for grow and harvest.
 - **2026-06-06 10:30** - [Codex] Made orchestrator show root logs by default and fixed hack-strat deployment coverage when servers had stale worker scripts.
+- **2026-06-06 10:40** - [Codex] Fixed post-augmentation hack-strat stalls by copying worker files before RAM checks and allowing home worker deployment above a configurable reserve.
