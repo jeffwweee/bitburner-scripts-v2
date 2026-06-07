@@ -36,6 +36,15 @@
       "path": "lib/status.js"
     },
     {
+      "path": "lib/stock-status.js"
+    },
+    {
+      "path": "lib/stock-watch.js"
+    },
+    {
+      "path": "lib/stock-trader.js"
+    },
+    {
       "path": "lib/share.js"
     },
     {

@@ -35,6 +35,9 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/hack-strat.js` or `lib/orchestrator.js` fit in RAM.
 - `lib/info.js`: single-server inspection.
 - `lib/status.js`: one-shot troubleshooting view for controller processes, target stats, worker threads, and action timings.
+- `lib/stock-status.js`: shows stock API access, current positions, and visible market symbols.
+- `lib/stock-watch.js`: tracks prices and prints 4S forecast/volatility or fallback trend.
+- `lib/stock-trader.js`: conservative long-only stock trader using 4S forecast when available, otherwise observed trend.
 - `lib/share.js`: keeps a small share worker running on home; orchestrator starts it before `hack-strat` by default.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
@@ -57,6 +60,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Target readiness rule: weaken until security is near minimum, grow until money is near max, then harvest. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max; grow phase uses 80% grow / 20% weaken, harvest phase uses 15% hack / 60% grow / 25% weaken.
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
 - Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve a small home RAM slice for `ns.share()` once faction work matters.
+- Money: stock automation uses `ns.stock`, not Singularity/SF4. Scripted trading requires WSE/TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -74,6 +78,7 @@ run lib/bootstrap.js
 run lib/scan.js money
 run lib/root.js
 run lib/status.js
+run lib/stock-status.js
 run lib/share.js
 run lib/hack-strat.js --rank
 run lib/orchestrator.js --tail

@@ -94,6 +94,9 @@ run lib/bootstrap.js
 run lib/share.js
 run lib/info.js foodnstuff
 run lib/status.js foodnstuff
+run lib/stock-status.js
+run lib/stock-watch.js
+run lib/stock-trader.js --dry-run
 run lib/deploy.js weaken foodnstuff
 run lib/deploy.js grow foodnstuff
 run lib/deploy.js hack foodnstuff
@@ -154,6 +157,24 @@ Current `lib/hack-strat.js` phases are intentionally conservative:
 run lib/share.js --fraction 0.05
 run lib/orchestrator.js --share-fraction 0.05
 run lib/orchestrator.js --no-share
+```
+
+## Stock Market
+
+Stock automation does not require Source-File 4. It requires WSE/TIX access, and works best after buying 4S Market Data plus 4S Market Data TIX API:
+
+```text
+run lib/stock-status.js
+run lib/stock-watch.js --tail
+run lib/stock-trader.js --dry-run
+run lib/stock-trader.js
+```
+
+`lib/stock-trader.js` is conservative and long-only. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults keep `$1b` cash reserve, use 50% of cash above reserve, and cap each symbol to 15% of the stock book:
+
+```text
+run lib/stock-trader.js --reserve 5000000000 --budget 0.4
+run lib/stock-trader.js --buy-forecast 0.62 --sell-forecast 0.53
 ```
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
