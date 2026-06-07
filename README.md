@@ -73,6 +73,8 @@ alias pull="run lib/repo-update.js"
 alias orch="run lib/orchestrator.js"
 alias orchtail="run lib/orchestrator.js --tail"
 alias orchonce="run lib/orchestrator.js --once"
+alias start-all="run lib/orchestrator.js --start-all"
+alias start-all-tail="run lib/orchestrator.js --start-all --tail"
 ```
 
 After that, run `pull` in the Bitburner terminal to download the latest `manifest.json`, `README.md`, and all files listed in it. Add new scripts to `manifest.json` when they should be pulled into the game.
@@ -188,6 +190,15 @@ run lib/orchestrator.js --stock --stock-live --stock-budget 0.4
 
 Stock trader/watch logs go to script logs by default. Use `--tail` or `--terminal` when you want visible output.
 
+Use `start-all` after your core APIs are purchased and you want one command to start infrastructure, share, hacking, and live stock automation:
+
+```text
+start-all
+start-all-tail
+```
+
+`--start-all` uses safer controller reserves than bare orchestrator: 64GB home reserve, 5% share RAM, live stock trading with `$5b` cash reserve, 40% stock budget above reserve, and 15% max stock position.
+
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
 ```text
@@ -226,6 +237,7 @@ run lib/orchestrator.js --strategy prep
 run lib/orchestrator.js --home-reserve 64
 run lib/orchestrator.js --share-fraction 0.1
 run lib/orchestrator.js --stock
+run lib/orchestrator.js --start-all
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --restart-hack-strat
 ```

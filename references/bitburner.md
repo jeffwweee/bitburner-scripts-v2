@@ -61,6 +61,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
 - Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve a small home RAM slice for `ns.share()` once faction work matters.
 - Money: stock automation uses `ns.stock`, not Singularity/SF4. Scripted trading requires WSE/TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API. Orchestrator starts stock trading only with `--stock`; real trades require `--stock-live`.
+- Start-all: `run lib/orchestrator.js --start-all` starts root/darkweb/buy-server/share/hack-strat/live stock trading with 64GB home reserve, 5% share, `$5b` stock reserve, and 40% stock budget.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -73,6 +74,7 @@ alias pull="run lib/repo-update.js"
 alias orch="run lib/orchestrator.js"
 alias orchtail="run lib/orchestrator.js --tail"
 alias orchonce="run lib/orchestrator.js --once"
+alias start-all="run lib/orchestrator.js --start-all"
 
 run lib/bootstrap.js
 run lib/scan.js money
