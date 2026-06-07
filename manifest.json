@@ -15,6 +15,13 @@
       "path": "README.md"
     },
     {
+      "path": "reserve.json",
+      "preserve": true
+    },
+    {
+      "path": "helper/config.js"
+    },
+    {
       "path": "worker/weaken.js"
     },
     {
@@ -46,6 +53,9 @@
     },
     {
       "path": "lib/stock-sell-all.js"
+    },
+    {
+      "path": "lib/reserve.js"
     },
     {
       "path": "lib/share.js"

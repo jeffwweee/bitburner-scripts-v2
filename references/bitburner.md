@@ -1,6 +1,6 @@
 # Bitburner References
 
-Last reviewed: 2026-06-06
+Last reviewed: 2026-06-07
 
 ## Purpose
 
@@ -30,6 +30,8 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 
 - `repo-update.js` and `lib/repo-update.js`: in-game updater that downloads `manifest.json` and every listed file from GitHub raw with cache busting. The root copy is a compatibility shim for fresh bootstrap and old aliases.
 - `manifest.json`: explicit list of files pulled into Bitburner.
+- `reserve.json`: preserved in-game tuning file for money reserve, home RAM reserve, share fraction, purchased-server min/max/budget, stock reserve/budget, and darkweb budget.
+- `helper/config.js`: shared loader/normalizer for `reserve.json`.
 - `worker/weaken.js`, `worker/grow.js`, `worker/hack.js`: tiny infinite-loop worker scripts.
 - `worker/share.js`: tiny infinite-loop share worker for faction reputation boost.
 - `lib/bootstrap.js`: tiny fresh-save/NG+ home-only loop used before `lib/hack-strat.js` or `lib/orchestrator.js` fit in RAM.
@@ -39,6 +41,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `lib/stock-watch.js`: tracks prices and prints 4S forecast/volatility or fallback trend.
 - `lib/stock-trader.js`: conservative long-only stock trader using 4S forecast when available, otherwise observed trend.
 - `lib/stock-sell-all.js`: liquidates stock positions before installing augmentations.
+- `lib/reserve.js`: shows or updates `reserve.json` from the terminal.
 - `lib/share.js`: keeps a small share worker running on home; orchestrator starts it before `hack-strat` by default.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
@@ -59,11 +62,12 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - First loop: `pull`, run `lib/bootstrap.js`, run `lib/root.js` as port openers unlock, then move to `lib/orchestrator.js` as home RAM allows.
 - Good early targets are usually low required-hacking money servers: `n00dles`, `foodnstuff`, `sigma-cosmetics`, `joesguns`, and `hong-fang-tea`; let `lib/hack-strat.js --rank` verify with live state.
 - Target readiness rule: weaken until security is near minimum, grow until money is near max, then harvest. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max; grow phase uses 80% grow / 20% weaken, harvest phase uses 15% hack / 60% grow / 25% weaken.
-- Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
-- Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve a small home RAM slice for `ns.share()` once faction work matters.
+- Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable. Use `reserve.json` to keep shared cash reserve and purchased-server RAM caps.
+- Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve home RAM for `ns.share()` once faction work matters. Bare orchestrator stays conservative at 5%; `--start-all` uses 15%.
 - Money: stock automation uses `ns.stock`, not Singularity/SF4. Scripted trading requires WSE/TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API. Orchestrator starts stock trading only with `--stock`; real trades require `--stock-live`.
 - Before augmentation installs: stop `lib/stock-trader.js` and run `lib/stock-sell-all.js` to convert stock positions back to cash.
-- Start-all: `run lib/orchestrator.js --start-all` starts root/darkweb/buy-server/share/hack-strat/live stock trading with 128GB home reserve, 5% share, `$500m` stock reserve, and 80% stock budget.
+- Start-all: `run lib/orchestrator.js --start-all` starts root/darkweb/buy-server/share/hack-strat/live stock trading with 128GB home reserve, 15% share, `$500m` stock reserve, and 80% stock budget.
+- Reserve model: inspiration repo has a global `reserve.js`/`reserve.txt` concept; this repo uses preserved `reserve.json` plus `lib/reserve.js`. Command-line flags override config for one-off runs.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -83,6 +87,7 @@ run lib/scan.js money
 run lib/root.js
 run lib/status.js
 run lib/stock-status.js
+run lib/reserve.js
 run lib/share.js
 run lib/hack-strat.js --rank
 run lib/orchestrator.js --tail

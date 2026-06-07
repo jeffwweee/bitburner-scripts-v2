@@ -99,6 +99,7 @@ run lib/status.js foodnstuff
 run lib/stock-status.js
 run lib/stock-watch.js
 run lib/stock-trader.js --dry-run
+run lib/reserve.js
 run lib/deploy.js weaken foodnstuff
 run lib/deploy.js grow foodnstuff
 run lib/deploy.js hack foodnstuff
@@ -158,8 +159,31 @@ Current `lib/hack-strat.js` phases are intentionally conservative:
 ```text
 run lib/share.js --fraction 0.05
 run lib/orchestrator.js --share-fraction 0.05
+run lib/orchestrator.js --share-fraction 0.15
 run lib/orchestrator.js --no-share
 ```
+
+Bare orchestrator keeps the conservative 5% share default. `--start-all` uses 15% share RAM by default because it is meant for active faction grinding after your home RAM is large enough.
+
+## Reserve Config
+
+`reserve.json` is your in-game tuning file. `pull` downloads the starter file only when it does not already exist, so your local settings are preserved:
+
+```text
+cat reserve.json
+run lib/reserve.js
+run lib/reserve.js --money 500m --home-ram 128 --share 0.15
+run lib/reserve.js --server-min-ram 8 --server-max-ram 1024 --server-budget 0.25
+run lib/reserve.js --stock-reserve 500m --stock-budget 0.8
+```
+
+Current automation reads these defaults:
+
+- `moneyReserve`: cash all spending scripts should leave untouched.
+- `homeRamReserve`: home RAM kept away from hacking/share worker allocation.
+- `shareFraction`: home RAM fraction assigned to `worker/share.js`.
+- `servers.maxRam`: hard cap for purchased-server buys/upgrades.
+- `stocks.reserve`: cash reserve for stock trading; keep this aligned with `moneyReserve` unless you want stocks to be stricter.
 
 ## Stock Market
 
@@ -176,7 +200,7 @@ run lib/orchestrator.js --stock
 run lib/orchestrator.js --stock --stock-live
 ```
 
-`lib/stock-trader.js` is conservative and long-only. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults keep `$1b` cash reserve, use 50% of cash above reserve, and cap each symbol to 15% of the stock book:
+`lib/stock-trader.js` is conservative and long-only. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults come from `reserve.json`:
 
 ```text
 run lib/stock-trader.js --reserve 5000000000 --budget 0.4
@@ -206,14 +230,15 @@ start-all
 start-all-tail
 ```
 
-`--start-all` uses stronger automation defaults than bare orchestrator: 128GB home reserve, 5% share RAM, live stock trading with `$500m` cash reserve, 80% stock budget above reserve, and 15% max stock position.
+`--start-all` uses stronger automation defaults than bare orchestrator: 128GB home reserve, 15% share RAM, live stock trading with `$500m` cash reserve, 80% stock budget above reserve, and 15% max stock position.
 
-`lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
+`lib/buy-server.js` spends a conservative slice of cash above `moneyReserve` on the largest purchased server it can afford, capped by `servers.maxRam`:
 
 ```text
 run lib/buy-server.js
 run lib/buy-server.js 50
 run lib/buy-server.js 0.5 16
+run lib/buy-server.js --max-ram 2048
 ```
 
 `lib/darkweb.js` buys TOR and port opener programs when the Singularity API is available:

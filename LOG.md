@@ -43,3 +43,5 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-07 09:45** - [Codex] Added orchestrator `--start-all` preset and recommended aliases for starting hacking, share, infrastructure, and live stock automation with safer reserves.
 - **2026-06-07 09:50** - [Codex] Updated `--start-all` defaults to 128GB home reserve, `$500m` stock reserve, and 80% stock budget.
 - **2026-06-07 09:55** - [Codex] Added `lib/stock-sell-all.js` for liquidating stock positions before installing augmentations.
+- **2026-06-07 10:05** - [Codex] Increased `--start-all` share RAM to 15% and made orchestrator restart `lib/share.js` when share settings change.
+- **2026-06-07 10:25** - [Codex] Added preserved `reserve.json`, `lib/reserve.js`, and shared config wiring for money reserve, share/home RAM, stocks, darkweb, and purchased-server RAM caps.

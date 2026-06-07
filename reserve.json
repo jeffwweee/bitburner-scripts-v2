@@ -1,0 +1,19 @@
+{
+  "moneyReserve": 500000000,
+  "homeRamReserve": 128,
+  "shareFraction": 0.15,
+  "servers": {
+    "budget": 0.25,
+    "minRam": 8,
+    "maxRam": 1024,
+    "replaceMultiplier": 2
+  },
+  "stocks": {
+    "budget": 0.8,
+    "reserve": 500000000,
+    "maxPosition": 0.15
+  },
+  "darkweb": {
+    "budget": 0.35
+  }
+}
