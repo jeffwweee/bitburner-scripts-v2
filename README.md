@@ -170,6 +170,8 @@ run lib/stock-status.js
 run lib/stock-watch.js --tail
 run lib/stock-trader.js --dry-run
 run lib/stock-trader.js
+run lib/stock-sell-all.js --dry-run
+run lib/stock-sell-all.js
 run lib/orchestrator.js --stock
 run lib/orchestrator.js --stock --stock-live
 ```
@@ -189,6 +191,13 @@ run lib/orchestrator.js --stock --stock-live --stock-budget 0.4
 ```
 
 Stock trader/watch logs go to script logs by default. Use `--tail` or `--terminal` when you want visible output.
+
+Before installing augmentations, stop the trader and liquidate positions:
+
+```text
+kill lib/stock-trader.js
+run lib/stock-sell-all.js
+```
 
 Use `start-all` after your core APIs are purchased and you want one command to start infrastructure, share, hacking, and live stock automation:
 

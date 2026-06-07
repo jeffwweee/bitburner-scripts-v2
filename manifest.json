@@ -45,6 +45,9 @@
       "path": "lib/stock-trader.js"
     },
     {
+      "path": "lib/stock-sell-all.js"
+    },
+    {
       "path": "lib/share.js"
     },
     {
