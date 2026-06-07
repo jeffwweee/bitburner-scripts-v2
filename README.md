@@ -182,9 +182,11 @@ run lib/stock-trader.js --buy-forecast 0.62 --sell-forecast 0.53
 Orchestrator does not start stock trading unless `--stock` is passed. `--stock` starts in dry-run mode; add `--stock-live` only after checking `stock-status` and dry-run output:
 
 ```text
-run lib/orchestrator.js --stock --stock-reserve 5000000000
+run lib/orchestrator.js --stock --stock-reserve 5000000000 --tail
 run lib/orchestrator.js --stock --stock-live --stock-budget 0.4
 ```
+
+Stock trader/watch logs go to script logs by default. Use `--tail` or `--terminal` when you want visible output.
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
