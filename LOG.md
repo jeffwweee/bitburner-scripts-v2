@@ -41,3 +41,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-07 09:30** - [Codex] Added opt-in orchestrator support for `lib/stock-trader.js`, defaulting to dry-run unless `--stock-live` is passed.
 - **2026-06-07 09:35** - [Codex] Made stock trader/watch logs quiet by default, with `--tail` or `--terminal` for visible output.
 - **2026-06-07 09:45** - [Codex] Added orchestrator `--start-all` preset and recommended aliases for starting hacking, share, infrastructure, and live stock automation with safer reserves.
+- **2026-06-07 09:50** - [Codex] Updated `--start-all` defaults to 128GB home reserve, `$500m` stock reserve, and 80% stock budget.

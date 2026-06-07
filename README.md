@@ -197,7 +197,7 @@ start-all
 start-all-tail
 ```
 
-`--start-all` uses safer controller reserves than bare orchestrator: 64GB home reserve, 5% share RAM, live stock trading with `$5b` cash reserve, 40% stock budget above reserve, and 15% max stock position.
+`--start-all` uses stronger automation defaults than bare orchestrator: 128GB home reserve, 5% share RAM, live stock trading with `$500m` cash reserve, 80% stock budget above reserve, and 15% max stock position.
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
 
