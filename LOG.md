@@ -38,3 +38,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-06 10:55** - [Codex] Made casino helpers stop cleanly on goal/casino-cap UI states instead of throwing when the final blackjack hand has no detectable outcome.
 - **2026-06-06 11:05** - [Codex] Added home-based `lib/share.js` and `worker/share.js` for a small faction reputation RAM boost, started by orchestrator before `hack-strat`.
 - **2026-06-07 09:20** - [Codex] Added stock market toolkit: `lib/stock-status.js`, `lib/stock-watch.js`, and conservative long-only `lib/stock-trader.js`.
+- **2026-06-07 09:30** - [Codex] Added opt-in orchestrator support for `lib/stock-trader.js`, defaulting to dry-run unless `--stock-live` is passed.

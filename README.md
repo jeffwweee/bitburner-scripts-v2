@@ -168,6 +168,8 @@ run lib/stock-status.js
 run lib/stock-watch.js --tail
 run lib/stock-trader.js --dry-run
 run lib/stock-trader.js
+run lib/orchestrator.js --stock
+run lib/orchestrator.js --stock --stock-live
 ```
 
 `lib/stock-trader.js` is conservative and long-only. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults keep `$1b` cash reserve, use 50% of cash above reserve, and cap each symbol to 15% of the stock book:
@@ -175,6 +177,13 @@ run lib/stock-trader.js
 ```text
 run lib/stock-trader.js --reserve 5000000000 --budget 0.4
 run lib/stock-trader.js --buy-forecast 0.62 --sell-forecast 0.53
+```
+
+Orchestrator does not start stock trading unless `--stock` is passed. `--stock` starts in dry-run mode; add `--stock-live` only after checking `stock-status` and dry-run output:
+
+```text
+run lib/orchestrator.js --stock --stock-reserve 5000000000
+run lib/orchestrator.js --stock --stock-live --stock-budget 0.4
 ```
 
 `lib/buy-server.js` spends a conservative slice of current cash on the largest purchased server it can afford. By default it uses 25% of available money and starts at 8GB:
@@ -214,6 +223,7 @@ run lib/orchestrator.js --target foodnstuff
 run lib/orchestrator.js --strategy prep
 run lib/orchestrator.js --home-reserve 64
 run lib/orchestrator.js --share-fraction 0.1
+run lib/orchestrator.js --stock
 run lib/orchestrator.js --tail
 run lib/orchestrator.js --restart-hack-strat
 ```

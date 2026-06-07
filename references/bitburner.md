@@ -60,7 +60,7 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Target readiness rule: weaken until security is near minimum, grow until money is near max, then harvest. Current `hack-strat.js` thresholds are security above min + 5 and money below 75% max; grow phase uses 80% grow / 20% weaken, harvest phase uses 15% hack / 60% grow / 25% weaken.
 - Spend priorities: home RAM when script RAM constrains orchestration, TOR and port openers as affordable, then purchased servers once income is stable.
 - Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve a small home RAM slice for `ns.share()` once faction work matters.
-- Money: stock automation uses `ns.stock`, not Singularity/SF4. Scripted trading requires WSE/TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API.
+- Money: stock automation uses `ns.stock`, not Singularity/SF4. Scripted trading requires WSE/TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API. Orchestrator starts stock trading only with `--stock`; real trades require `--stock-live`.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
