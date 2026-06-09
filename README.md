@@ -200,7 +200,7 @@ run lib/orchestrator.js --stock
 run lib/orchestrator.js --stock --stock-live
 ```
 
-`lib/stock-trader.js` is conservative and long-only. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults come from `reserve.json`:
+`lib/stock-trader.js` is conservative and long-only. It refuses to run unless WSE and TIX are available. It uses 4S forecast when available, otherwise it falls back to observed price trend. Defaults come from `reserve.json`:
 
 ```text
 run lib/stock-trader.js --reserve 5000000000 --budget 0.4

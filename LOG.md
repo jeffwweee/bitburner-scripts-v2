@@ -45,3 +45,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-07 09:55** - [Codex] Added `lib/stock-sell-all.js` for liquidating stock positions before installing augmentations.
 - **2026-06-07 10:05** - [Codex] Increased `--start-all` share RAM to 15% and made orchestrator restart `lib/share.js` when share settings change.
 - **2026-06-07 10:25** - [Codex] Added preserved `reserve.json`, `lib/reserve.js`, and shared config wiring for money reserve, share/home RAM, stocks, darkweb, and purchased-server RAM caps.
+- **2026-06-09 00:05** - [Codex] Added explicit WSE/TIX guards to `lib/stock-trader.js` and startup logging for 4S forecast versus trend fallback mode.
