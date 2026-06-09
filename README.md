@@ -214,6 +214,8 @@ run lib/orchestrator.js --stock --stock-reserve 5000000000 --tail
 run lib/orchestrator.js --stock --stock-live --stock-budget 0.4
 ```
 
+If `--start-all` does not leave `lib/stock-trader.js` running, check terminal output first. Startup blockers such as missing WSE/TIX access are printed to terminal even when stock logs are otherwise quiet.
+
 Stock trader/watch logs go to script logs by default. Use `--tail` or `--terminal` when you want visible output.
 
 Before installing augmentations, stop the trader and liquidate positions:
