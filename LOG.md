@@ -48,3 +48,4 @@ Each entry: `- **YYYY-MM-DD HH:MM** - [agent] description`
 - **2026-06-09 00:05** - [Codex] Added explicit WSE/TIX guards to `lib/stock-trader.js` and startup logging for 4S forecast versus trend fallback mode.
 - **2026-06-09 00:20** - [Codex] Made stock-trader startup blockers print to terminal and made orchestrator report when stock-trader exits immediately.
 - **2026-06-09 00:30** - [Codex] Fixed Bitburner v3 stock access detection by supporting `hasWseAccount`, `hasTixApiAccess`, and `has4SDataTixApi` method casing.
+- **2026-06-10 00:10** - [Codex] Added BN4 helpers for connect/backdoor paths, faction invitations/work, and home RAM/core upgrades; wired faction joining and home upgrades into orchestrator.

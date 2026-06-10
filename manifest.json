@@ -58,6 +58,15 @@
       "path": "lib/reserve.js"
     },
     {
+      "path": "lib/path.js"
+    },
+    {
+      "path": "lib/factions.js"
+    },
+    {
+      "path": "lib/home-upgrade.js"
+    },
+    {
       "path": "lib/share.js"
     },
     {

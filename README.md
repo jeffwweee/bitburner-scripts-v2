@@ -100,6 +100,9 @@ run lib/stock-status.js
 run lib/stock-watch.js
 run lib/stock-trader.js --dry-run
 run lib/reserve.js
+run lib/path.js CSEC
+run lib/factions.js --status
+run lib/home-upgrade.js --dry-run
 run lib/deploy.js weaken foodnstuff
 run lib/deploy.js grow foodnstuff
 run lib/deploy.js hack foodnstuff
@@ -175,6 +178,7 @@ run lib/reserve.js
 run lib/reserve.js --money 500m --home-ram 128 --share 0.15
 run lib/reserve.js --server-min-ram 8 --server-max-ram 1024 --server-budget 0.25
 run lib/reserve.js --stock-reserve 500m --stock-budget 0.8
+run lib/reserve.js --home-budget 0.35
 ```
 
 Current automation reads these defaults:
@@ -184,6 +188,26 @@ Current automation reads these defaults:
 - `shareFraction`: home RAM fraction assigned to `worker/share.js`.
 - `servers.maxRam`: hard cap for purchased-server buys/upgrades.
 - `stocks.reserve`: cash reserve for stock trading; keep this aligned with `moneyReserve` unless you want stocks to be stricter.
+- `home.budget`: budget fraction above `moneyReserve` for home RAM/core upgrades.
+
+## BN4 / Singularity Helpers
+
+BN4 unlocks Singularity automation. These helpers are safe to run manually first:
+
+```text
+run lib/path.js CSEC
+run lib/path.js w0r1d_d43m0n --backdoor
+run lib/factions.js --join --status
+run lib/factions.js --work CyberSec --type hacking
+run lib/home-upgrade.js --dry-run
+run lib/home-upgrade.js --once
+```
+
+`lib/path.js` prints exact terminal `connect` chains. In BN4, `--go` connects through the path and `--backdoor` connects and runs `installBackdoor()`.
+
+`lib/factions.js` accepts pending faction invites and can start faction work. Orchestrator runs invite joining quietly by default.
+
+`lib/home-upgrade.js` buys home RAM/core upgrades from cash above `moneyReserve`, using `home.budget` from `reserve.json`. Orchestrator runs it before purchased-server buying so home RAM gets priority.
 
 ## Stock Market
 
@@ -225,7 +249,7 @@ kill lib/stock-trader.js
 run lib/stock-sell-all.js
 ```
 
-Use `start-all` after your core APIs are purchased and you want one command to start infrastructure, share, hacking, and live stock automation:
+Use `start-all` after your core APIs are purchased and you want one command to start infrastructure, home upgrades, faction invite joining, share, hacking, and live stock automation:
 
 ```text
 start-all

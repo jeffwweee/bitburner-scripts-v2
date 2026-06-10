@@ -42,6 +42,9 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - `lib/stock-trader.js`: conservative long-only stock trader requiring WSE/TIX, using 4S forecast when available, otherwise observed trend.
 - `lib/stock-sell-all.js`: liquidates stock positions before installing augmentations.
 - `lib/reserve.js`: shows or updates `reserve.json` from the terminal.
+- `lib/path.js`: prints terminal connect chains and can connect/backdoor through Singularity in BN4/SF4.
+- `lib/factions.js`: joins pending faction invitations and can start faction work through Singularity.
+- `lib/home-upgrade.js`: buys home RAM/core upgrades from spendable cash above reserve.
 - `lib/share.js`: keeps a small share worker running on home; orchestrator starts it before `hack-strat` by default.
 - `lib/scan.js`: recursive server discovery and sorted table output.
 - `lib/root.js`: opens available ports and nukes eligible servers.
@@ -66,8 +69,9 @@ This file is the durable context note for Jef's Bitburner save and this repo. Be
 - Faction reputation: use `lib/share.js` or orchestrator `--share-fraction` to reserve home RAM for `ns.share()` once faction work matters. Bare orchestrator stays conservative at 5%; `--start-all` uses 15%.
 - Money: stock automation uses `ns.stock`, not Singularity/SF4. `stock-trader` hard-requires WSE and TIX access; reliable forecast trading wants 4S Market Data and 4S Market Data TIX API. Bitburner v3 stock access methods are camel-cased, e.g. `hasWseAccount`, `hasTixApiAccess`, and `has4SDataTixApi`; scripts keep aliases for older all-caps variants. Orchestrator starts stock trading only with `--stock`; real trades require `--stock-live`.
 - Before augmentation installs: stop `lib/stock-trader.js` and run `lib/stock-sell-all.js` to convert stock positions back to cash.
-- Start-all: `run lib/orchestrator.js --start-all` starts root/darkweb/buy-server/share/hack-strat/live stock trading with 128GB home reserve, 15% share, `$500m` stock reserve, and 80% stock budget.
+- Start-all: `run lib/orchestrator.js --start-all` starts root/darkweb/faction joining/home upgrades/buy-server/share/hack-strat/live stock trading with 128GB home reserve, 15% share, `$500m` stock reserve, and 80% stock budget.
 - Reserve model: inspiration repo has a global `reserve.js`/`reserve.txt` concept; this repo uses preserved `reserve.json` plus `lib/reserve.js`. Command-line flags override config for one-off runs.
+- BN4.1 plan: use `lib/path.js` for backdoor routes, `lib/factions.js` for invite/work automation, and `lib/home-upgrade.js` for home RAM/core growth before purchased-server spending.
 - Post-augmentation note: remote servers may not have worker files yet. `hack-strat.js` copies workers before RAM checks and can use home RAM above `--home-reserve` so fresh resets do not stall.
 - CSEC readiness: once hacking level and route allow it, connect/backdoor `CSEC`; until backdoor automation is available, this is likely a manual terminal action.
 - Avoid advanced batch timing, stocks, gangs, sleeves, corporations, Bladeburner, or BitNode-specific automation until the save state says those systems are unlocked or relevant.
@@ -88,6 +92,9 @@ run lib/root.js
 run lib/status.js
 run lib/stock-status.js
 run lib/reserve.js
+run lib/path.js CSEC
+run lib/factions.js --status
+run lib/home-upgrade.js --dry-run
 run lib/share.js
 run lib/hack-strat.js --rank
 run lib/orchestrator.js --tail

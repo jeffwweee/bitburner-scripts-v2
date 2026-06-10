@@ -15,5 +15,10 @@
   },
   "darkweb": {
     "budget": 0.35
+  },
+  "home": {
+    "budget": 0.35,
+    "ram": true,
+    "cores": true
   }
 }

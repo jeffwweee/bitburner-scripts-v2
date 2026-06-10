@@ -18,6 +18,11 @@ export const DEFAULT_RESERVE_CONFIG = {
   darkweb: {
     budget: 0.35,
   },
+  home: {
+    budget: 0.35,
+    ram: true,
+    cores: true,
+  },
 };
 
 export function loadReserveConfig(ns, path = RESERVE_CONFIG_PATH) {
@@ -47,6 +52,9 @@ export function normalizeReserveConfig(config) {
   merged.stocks.reserve = nonNegativeNumber(merged.stocks.reserve, merged.moneyReserve);
   merged.stocks.maxPosition = fraction(merged.stocks.maxPosition, DEFAULT_RESERVE_CONFIG.stocks.maxPosition);
   merged.darkweb.budget = fraction(merged.darkweb.budget, DEFAULT_RESERVE_CONFIG.darkweb.budget);
+  merged.home.budget = fraction(merged.home.budget, DEFAULT_RESERVE_CONFIG.home.budget);
+  merged.home.ram = Boolean(merged.home.ram);
+  merged.home.cores = Boolean(merged.home.cores);
 
   if (merged.servers.maxRam < merged.servers.minRam) {
     merged.servers.maxRam = merged.servers.minRam;
